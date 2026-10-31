@@ -385,12 +385,17 @@
                 if (!db.students) db.students = [];
                 if (!db.disposals) db.disposals = [];
                 if (!db.bins) db.bins = [];
-                
-                if (activeStudent) {
+
+                const savedStudentId = localStorage.getItem('ecosort_active_student_id');
+                if (savedStudentId) {
+                    let matchedStudent = db.students.find(s => s.id === savedStudentId);
+                    if (matchedStudent) {
+                        activeStudent = matchedStudent;
+                    }
+                } else if (activeStudent) {
                     let updated = db.students.find(s => s.id === activeStudent.id);
                     if (updated) activeStudent = updated;
                 }
-                
                 document.getElementById('sync-status').className = "inline-block w-2 h-2 rounded-full bg-emerald-400";
             } else {
                 saveDB();
@@ -477,6 +482,7 @@
         }
 
         function studentLogout() {
+            localStorage.removeItem('ecosort_active_student_id');
             activeStudent = null;
             updateUI();
         }
@@ -798,8 +804,11 @@
         function updateUI() {
             const loggedOutView = document.getElementById('student-logged-out');
             const loggedInView = document.getElementById('student-logged-in');
-
+            
             if (activeStudent) {
+                // Save current active student ID so it persists across refreshes
+                localStorage.setItem('ecosort_active_student_id', activeStudent.id);
+                
                 loggedOutView.classList.add('hidden');
                 loggedInView.classList.remove('hidden');
                 document.getElementById('profile-name').innerText = activeStudent.name;
