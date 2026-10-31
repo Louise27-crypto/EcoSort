@@ -36,11 +36,11 @@
     <!-- Main Content Container -->
     <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4">
 
-        <!-- STUDENT PROFILE BANNER -->
+        <!-- USER PROFILE BANNER -->
         <section id="student-banner" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md">
             <div id="student-logged-out" class="flex justify-between items-center">
                 <div>
-                    <h3 class="font-bold text-sm">Student Session Inactive</h3>
+                    <h3 class="font-bold text-sm">Session Inactive</h3>
                     <p class="text-xs text-emerald-100">Scan QR Code to Log In</p>
                 </div>
                 <button onclick="openQRLoginModal()" class="bg-white text-emerald-800 text-xs font-bold px-3 py-2 rounded-xl shadow hover:bg-emerald-50">
@@ -118,7 +118,7 @@
                 </div>
             </div>
         </section>
-
+        
         <!-- ========================================== -->
         <!-- TAB 2: ANALYTICS & LEADERBOARD             -->
         <!-- ========================================== -->
@@ -169,17 +169,22 @@
                 </div>
             </div>
 
-            <!-- Manage Students -->
+            <!-- Manage Users / Students / Teachers -->
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-                <h3 class="font-bold text-slate-700 text-sm">Manage Students</h3>
+                <h3 class="font-bold text-slate-700 text-sm">Manage Users (Students / Teachers / Staff)</h3>
                 <form id="admin-student-form" onsubmit="handleAdminStudentSave(event)" class="space-y-2">
                     <input type="text" id="admin-student-custom-id" placeholder="ID Number (e.g. 1 or 251-02131)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
                     <input type="text" id="admin-student-username" placeholder="Custom Username (e.g. eco_jude)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
-                    <input type="text" id="admin-student-name" placeholder="Student Full Name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
-                    <input type="text" id="admin-student-room" placeholder="Room / Section (e.g. Grade 11 Heisenberg)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="text" id="admin-student-name" placeholder="Full Name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <select id="admin-student-role" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white">
+                        <option value="Student">Student</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Staff/Other">Staff / Other</option>
+                    </select>
+                    <input type="text" id="admin-student-room" placeholder="Room / Section / Dept (e.g. Grade 11 Heisenberg)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
                     <input type="number" id="admin-student-points" placeholder="Points" value="0" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
                     <div class="flex gap-2">
-                        <button type="submit" id="admin-student-submit-btn" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl hover:bg-emerald-700">Add Student</button>
+                        <button type="submit" id="admin-student-submit-btn" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl hover:bg-emerald-700">Add User</button>
                         <button type="button" onclick="resetAdminStudentForm()" class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-2 rounded-xl">Clear</button>
                     </div>
                 </form>
@@ -205,7 +210,7 @@
                 <h3 class="font-bold text-slate-700 text-sm">QR Code Generator & Downloader</h3>
                 <div class="space-y-2">
                     <select id="qr-gen-type" onchange="toggleQRGenInputs()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white">
-                        <option value="student">Student ID QR</option>
+                        <option value="student">User ID QR</option>
                         <option value="bin">Bin Marker QR (Group-Specific)</option>
                     </select>
                     
@@ -251,11 +256,11 @@
     <div id="modal-qr-login" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 space-y-3">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-slate-700 text-sm">Scan Student ID or Bin QR</h3>
+                <h3 class="font-bold text-slate-700 text-sm">Scan User ID or Bin QR</h3>
                 <button onclick="closeQRLoginModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
             </div>
             <div id="qr-reader" class="rounded-xl overflow-hidden border border-slate-200"></div>
-            <p class="text-2xs text-slate-400 text-center">Point your camera at a Student ID or Group Bin QR code.</p>
+            <p class="text-2xs text-slate-400 text-center">Point your camera at a User ID or Group Bin QR code.</p>
         </div>
     </div>
 
@@ -275,14 +280,22 @@
                     <input type="text" id="self-edit-name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
                 </div>
                 <div>
-                    <label class="text-2xs text-slate-400 font-bold uppercase">Room / Section</label>
+                    <label class="text-2xs text-slate-400 font-bold uppercase">User Role</label>
+                    <select id="self-edit-user-type" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white">
+                        <option value="Student">Student</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Staff/Other">Staff / Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-2xs text-slate-400 font-bold uppercase">Room / Section / Dept</label>
                     <input type="text" id="self-edit-room" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
                 </div>
                 <button type="submit" class="w-full bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-emerald-700">Save Changes</button>
             </form>
         </div>
     </div>
-
+    
     <!-- ========================================== -->
     <!-- CORE JAVASCRIPT & APPLICATION LOGIC        -->
     <!-- ========================================== -->
@@ -364,9 +377,9 @@
                 alert("No disposal records to export.");
                 return;
             }
-            let csvContent = "data:text/csv;charset=utf-8,Student ID,Student Name,Username,Bin,Group/Room,Item,Properly Sorted,Timestamp\n";
+            let csvContent = "data:text/csv;charset=utf-8,User ID,User Name,Username,Role,Bin,Group/Room,Item,Properly Sorted,Timestamp\n";
             disposals.forEach(d => {
-                csvContent += `"${d.studentId}","${d.studentName}","${d.username || 'user'}","${d.bin}","${d.roomGroup || 'General'}","${d.item}","${d.isProper ? 'YES' : 'NO'}","${d.timestamp}"\n`;
+                csvContent += `"${d.studentId}","${d.studentName}","${d.username || 'user'}","${d.userType || 'Student'}","${d.bin}","${d.roomGroup || 'General'}","${d.item}","${d.isProper ? 'YES' : 'NO'}","${d.timestamp}"\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
@@ -375,9 +388,9 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
+            }
 
-        // Real-Time Cloud Listener
+        // Real-Time Cloud Listener with Persistent Session Recovery
         dbRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -385,7 +398,8 @@
                 if (!db.students) db.students = [];
                 if (!db.disposals) db.disposals = [];
                 if (!db.bins) db.bins = [];
-
+                
+                // Restore active user from persistent local storage
                 const savedStudentId = localStorage.getItem('ecosort_active_student_id');
                 if (savedStudentId) {
                     let matchedStudent = db.students.find(s => s.id === savedStudentId);
@@ -396,6 +410,7 @@
                     let updated = db.students.find(s => s.id === activeStudent.id);
                     if (updated) activeStudent = updated;
                 }
+                
                 document.getElementById('sync-status').className = "inline-block w-2 h-2 rounded-full bg-emerald-400";
             } else {
                 saveDB();
@@ -452,7 +467,7 @@
             document.getElementById('modal-qr-login').classList.add('hidden');
         }
 
-        // Unified Smart QR Scanner (Handles Student IDs & Bin Markers)
+        // Unified Smart QR Scanner (Handles User IDs & Bin Markers)
         function onScanSuccess(decodedText) {
             closeQRLoginModal();
             
@@ -491,6 +506,7 @@
             if (!activeStudent) return;
             document.getElementById('self-edit-username').value = activeStudent.username || "";
             document.getElementById('self-edit-name').value = activeStudent.name;
+            document.getElementById('self-edit-user-type').value = activeStudent.userType || "Student";
             document.getElementById('self-edit-room').value = activeStudent.room;
             document.getElementById('modal-self-edit').classList.remove('hidden');
         }
@@ -504,6 +520,7 @@
             if (!activeStudent) return;
             activeStudent.username = document.getElementById('self-edit-username').value.trim().toLowerCase().replace(/\s+/g, '_');
             activeStudent.name = document.getElementById('self-edit-name').value.trim();
+            activeStudent.userType = document.getElementById('self-edit-user-type').value;
             activeStudent.room = document.getElementById('self-edit-room').value.trim();
             saveDB();
             closeSelfEditModal();
@@ -514,6 +531,7 @@
             let customId = document.getElementById('admin-student-custom-id').value.trim();
             let username = document.getElementById('admin-student-username').value.trim().toLowerCase().replace(/\s+/g, '_');
             let name = document.getElementById('admin-student-name').value.trim();
+            let userType = document.getElementById('admin-student-role').value;
             let room = document.getElementById('admin-student-room').value.trim();
             let points = parseInt(document.getElementById('admin-student-points').value) || 0;
 
@@ -521,16 +539,17 @@
             if (existingIndex >= 0) {
                 db.students[existingIndex].username = username;
                 db.students[existingIndex].name = name;
+                db.students[existingIndex].userType = userType;
                 db.students[existingIndex].room = room;
                 db.students[existingIndex].points = points;
             } else {
-                db.students.push({ id: customId, username, name, room, points });
+                db.students.push({ id: customId, username, name, userType, room, points });
             }
 
             resetAdminStudentForm();
             saveDB();
         }
-
+        
         function editStudentAdmin(id) {
             let student = db.students.find(s => s.id === id);
             if (student) {
@@ -539,16 +558,20 @@
                 idField.disabled = true;
                 document.getElementById('admin-student-username').value = student.username || "";
                 document.getElementById('admin-student-name').value = student.name;
+                document.getElementById('admin-student-role').value = student.userType || "Student";
                 document.getElementById('admin-student-room').value = student.room;
                 document.getElementById('admin-student-points').value = student.points;
-                document.getElementById('admin-student-submit-btn').innerText = "Update Student";
+                document.getElementById('admin-student-submit-btn').innerText = "Update User";
             }
         }
 
         function deleteStudentAdmin(id) {
-            if (confirm("Delete this student record?")) {
+            if (confirm("Delete this user record?")) {
                 db.students = db.students.filter(s => s.id !== id);
-                if (activeStudent && activeStudent.id === id) activeStudent = null;
+                if (activeStudent && activeStudent.id === id) {
+                    localStorage.removeItem('ecosort_active_student_id');
+                    activeStudent = null;
+                }
                 saveDB();
             }
         }
@@ -557,7 +580,7 @@
             document.getElementById('admin-student-form').reset();
             let idField = document.getElementById('admin-student-custom-id');
             idField.disabled = false;
-            document.getElementById('admin-student-submit-btn').innerText = "Add Student";
+            document.getElementById('admin-student-submit-btn').innerText = "Add User";
         }
 
         // Bin CRUD Admin Functions
@@ -727,6 +750,174 @@
                 username: activeStudent.username || "user",
                 bin: activeBin,
                 roomGroup: activeRoomGroup,
+                it// Bin CRUD Admin Functions
+        function handleAdminBinSave(e) {
+            e.preventDefault();
+            let name = document.getElementById('admin-bin-name').value.trim();
+            let room = document.getElementById('admin-bin-room').value.trim();
+            let id = name.toLowerCase().replace(/\s+/g, '_') + "_" + room.toLowerCase().replace(/\s+/g, '_');
+
+            let existing = db.bins.find(b => b.id === id);
+            if (!existing) {
+                db.bins.push({ id, name, room });
+            }
+            resetAdminBinForm();
+            saveDB();
+        }
+
+        function deleteBinAdmin(id) {
+            if (confirm("Delete this bin type?")) {
+                db.bins = db.bins.filter(b => b.id !== id);
+                saveDB();
+            }
+        }
+
+        function resetAdminBinForm() {
+            document.getElementById('admin-bin-form').reset();
+        }
+
+        function toggleQRGenInputs() {
+            let type = document.getElementById('qr-gen-type').value;
+            document.getElementById('qr-student-select-wrap').classList.toggle('hidden', type !== 'student');
+            document.getElementById('qr-bin-select-wrap').classList.toggle('hidden', type !== 'bin');
+        }
+
+        function generateQRCode() {
+            let type = document.getElementById('qr-gen-type').value;
+            let textToEncode = "";
+            let label = "";
+
+            if (type === 'student') {
+                textToEncode = document.getElementById('qr-gen-student-select').value;
+                let s = db.students.find(x => x.id === textToEncode);
+                label = s ? `${s.name} [${s.userType || 'Student'}] (@${s.username || 'user'})` : textToEncode;
+            } else {
+                let binId = document.getElementById('qr-gen-bin-select').value;
+                let b = db.bins.find(x => x.id === binId);
+                if (b) {
+                    textToEncode = `BIN:${b.name}:${b.room}`;
+                    label = `${b.name} Bin (${b.room})`;
+                }
+            }
+
+            if (!textToEncode) return;
+
+            let canvasContainer = document.getElementById('qrcode-canvas');
+            canvasContainer.innerHTML = "";
+            
+            new QRCode(canvasContainer, {
+                text: textToEncode,
+                width: 160,
+                height: 160
+            });
+
+            document.getElementById('qr-output-label').innerText = label;
+            document.getElementById('qr-output-card').classList.remove('hidden');
+        }
+
+        function downloadQRCodeImage() {
+            let canvasElement = document.querySelector("#qrcode-canvas canvas");
+            let labelText = document.getElementById('qr-output-label').innerText;
+            
+            if (!canvasElement) return;
+
+            let compositeCanvas = document.createElement('canvas');
+            let ctx = compositeCanvas.getContext('2d');
+            
+            compositeCanvas.width = 240;
+            compositeCanvas.height = 280;
+            
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+            
+            ctx.drawImage(canvasElement, 40, 20, 160, 160);
+            
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 13px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(labelText, 120, 210);
+            
+            ctx.fillStyle = "#64748b";
+            ctx.font = "11px sans-serif";
+            ctx.fillText("EcoSort AI Mobile System", 120, 235);
+
+            let link = document.createElement('a');
+            link.download = `qrcode_${labelText.replace(/\s+/g, '_')}.png`;
+            link.href = compositeCanvas.toDataURL("image/png");
+            link.click();
+        }
+
+        async function requestCameraPermission() {
+            const video = document.getElementById('webcam');
+            const prompt = document.getElementById('camera-prompt');
+            const statusBadge = document.getElementById('ai-status');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                prompt.classList.add('hidden');
+                
+                statusBadge.innerText = "Loading AI...";
+                statusBadge.className = "text-2xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold";
+
+                cocoModel = await cocoSsd.load();
+                statusBadge.innerText = "AI Live";
+                statusBadge.className = "text-2xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold";
+                
+                detectFrame();
+            } catch (err) {
+                alert("Camera access denied.");
+            }
+        }
+
+        async function detectFrame() {
+            const video = document.getElementById('webcam');
+            if (cocoModel && video.readyState === 4) {
+                const predictions = await cocoModel.detect(video);
+                if (predictions.length > 0) {
+                    detectedItemLabel = predictions[0].class;
+                    document.getElementById('predicted-item').innerText = detectedItemLabel.toUpperCase();
+                    checkLogEligibility();
+                } else {
+                    detectedItemLabel = "";
+                    document.getElementById('predicted-item').innerText = "Scanning...";
+                    disableLogButton();
+                }
+            }
+            requestAnimationFrame(detectFrame);
+        }
+
+        function checkLogEligibility() {
+            const logBtn = document.getElementById('log-btn');
+            if (activeStudent && activeBin && detectedItemLabel) {
+                logBtn.disabled = false;
+                logBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function disableLogButton() {
+            const logBtn = document.getElementById('log-btn');
+            logBtn.disabled = true;
+            logBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        function logAIDisposal() {
+            if (!activeStudent || !activeBin || !detectedItemLabel) return;
+
+            let expectedBin = ITEM_BIN_RULES[detectedItemLabel] || "Residual";
+            let isProper = (activeBin === expectedBin);
+            let pointsEarned = isProper ? 10 : 0;
+
+            if (!db.disposals) db.disposals = [];
+
+            db.disposals.push({
+                studentId: activeStudent.id,
+                studentName: activeStudent.name,
+                username: activeStudent.username || "user",
+                userType: activeStudent.userType || "Student",
+                bin: activeBin,
+                roomGroup: activeRoomGroup,
                 item: detectedItemLabel,
                 isProper: isProper,
                 timestamp: new Date().toLocaleTimeString()
@@ -744,6 +935,19 @@
             saveDB();
         }
 
+        function switchTab(tab) {
+            ['scan', 'stats', 'admin'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "text-slate-400 font-semibold space-y-0.5";
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).className = "text-emerald-600 font-bold space-y-0.5";
+            if (tab === 'stats') {
+                renderLeaderboard();
+                renderStats();
+            }
+        }
+
         function renderLeaderboard() {
             let filter = document.getElementById('leaderboard-filter').value;
             let students = [...(db.students || [])];
@@ -755,7 +959,7 @@
             students.sort((a, b) => b.points - a.points);
 
             if (students.length === 0) {
-                document.getElementById('leaderboard-list').innerHTML = `<p class="text-slate-400 text-center py-2">No students registered yet.</p>`;
+                document.getElementById('leaderboard-list').innerHTML = `<p class="text-slate-400 text-center py-2">No users registered yet.</p>`;
                 return;
             }
 
@@ -764,7 +968,7 @@
                     <div class="flex items-center gap-2">
                         <span class="w-5 text-center font-bold text-slate-400">${idx + 1}.</span>
                         <div>
-                            <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
+                            <span class="font-bold text-slate-700 block">${s.name} <span class="text-2xs bg-slate-200 text-slate-600 px-1 py-0.5 rounded">${s.userType || 'Student'}</span> <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
                             <span class="text-2xs text-slate-400">${s.room}</span>
                         </div>
                     </div>
@@ -804,19 +1008,18 @@
         function updateUI() {
             const loggedOutView = document.getElementById('student-logged-out');
             const loggedInView = document.getElementById('student-logged-in');
-            
+
             if (activeStudent) {
-                // Save current active student ID so it persists across refreshes
                 localStorage.setItem('ecosort_active_student_id', activeStudent.id);
-                
+
                 loggedOutView.classList.add('hidden');
                 loggedInView.classList.remove('hidden');
                 document.getElementById('profile-name').innerText = activeStudent.name;
                 document.getElementById('profile-username').innerText = `@${activeStudent.username || 'user'}`;
-                document.getElementById('profile-room').innerText = activeStudent.room;
+                document.getElementById('profile-room').innerText = `${activeStudent.userType || 'Student'} • ${activeStudent.room}`;
                 document.getElementById('profile-id').innerText = `ID Number: ${activeStudent.id}`;
                 document.getElementById('profile-points').innerText = activeStudent.points;
-                document.getElementById('active-user-text').innerText = `${activeStudent.name} (@${activeStudent.username || 'user'})`;
+                document.getElementById('active-user-text').innerText = `${activeStudent.name} [${activeStudent.userType || 'Student'}]`;
             } else {
                 loggedOutView.classList.remove('hidden');
                 loggedInView.classList.add('hidden');
@@ -833,7 +1036,7 @@
             document.getElementById('students-crud-list').innerHTML = students.map(s => `
                 <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
                     <div>
-                        <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
+                        <span class="font-bold text-slate-700 block">${s.name} <span class="text-2xs bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">${s.userType || 'Student'}</span> <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
                         <span class="text-2xs text-slate-400">${s.room} • ID: ${s.id} • ${s.points} pts</span>
                     </div>
                     <div class="flex gap-1">
@@ -855,7 +1058,7 @@
             `).join('');
 
             document.getElementById('qr-gen-student-select').innerHTML = students.map(s => 
-                `<option value="${s.id}">${s.name} (@${s.username || 'user'}) - ID: ${s.id}</option>`
+                `<option value="${s.id}">${s.name} [${s.userType || 'Student'}] (@${s.username || 'user'}) - ID: ${s.id}</option>`
             ).join('');
 
             document.getElementById('qr-gen-bin-select').innerHTML = bins.map(b => 
@@ -866,4 +1069,4 @@
         }
     </script>
 </body>
-</html>
+</html
