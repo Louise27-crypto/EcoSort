@@ -193,6 +193,201 @@
 
     </main>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSort AI Mobile</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- TensorFlow.js & COCO-SSD -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <!-- HTML5 QR Code Scanner -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <!-- QRCode.js Library for Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col pb-20">
+
+    <!-- Header -->
+    <header class="bg-emerald-600 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-bold">🌱 EcoSort AI</h1>
+            <p class="text-xs text-emerald-100">Smart Waste Management</p>
+        </div>
+        <button onclick="requestAdminAccess()" id="role-btn" class="text-xs bg-emerald-800 border border-emerald-400 px-3 py-1.5 rounded-full font-semibold hover:bg-emerald-700">
+            Role: Student
+        </button>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4">
+
+        <!-- STUDENT AUTH & PROFILE BANNER -->
+        <section id="student-banner" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md">
+            <div id="student-logged-out" class="flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-sm">Student Session Inactive</h3>
+                    <p class="text-xs text-emerald-100">Scan Student ID QR to Log In</p>
+                </div>
+                <button onclick="openQRLoginModal()" class="bg-white text-emerald-800 text-xs font-bold px-3 py-2 rounded-xl shadow hover:bg-emerald-50">
+                    📷 Scan ID QR
+                </button>
+            </div>
+            
+            <div id="student-logged-in" class="hidden space-y-3">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 id="profile-name" class="text-lg font-bold">---</h3>
+                        <p id="profile-room" class="text-xs text-emerald-100">---</p>
+                        <p id="profile-id" class="text-2xs text-emerald-200">---</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="profile-points" class="text-2xl font-black">0</span>
+                        <span class="block text-xs text-emerald-100">Eco-Points</span>
+                    </div>
+                </div>
+                <div class="flex gap-2 pt-1 border-t border-emerald-400/30">
+                    <button onclick="openSelfEditModal()" class="text-2xs bg-emerald-700 hover:bg-emerald-800 px-2.5 py-1 rounded-lg">✏️ Edit Profile</button>
+                    <button onclick="studentLogout()" class="text-2xs bg-rose-700 hover:bg-rose-800 px-2.5 py-1 rounded-lg">Logout</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 1: AI SCANNER & DISPOSAL -->
+        <section id="tab-scan" class="space-y-4">
+            <!-- Session Setup Card -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Disposal Setup</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                        <span class="block text-2xs text-slate-400 font-bold uppercase">Active User</span>
+                        <span id="active-user-text" class="text-xs font-semibold text-slate-700 truncate block">Not Logged In</span>
+                    </div>
+                    <button onclick="selectBin()" class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-left hover:bg-slate-100">
+                        <span class="block text-2xs text-slate-400 font-bold uppercase">Target Bin</span>
+                        <span id="active-bin-text" class="text-xs font-semibold text-slate-700 truncate block">Select Bin</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Camera Detection Card -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 text-sm">AI Waste Scanner</h3>
+                    <span id="ai-status" class="text-2xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">AI Offline</span>
+                </div>
+
+                <!-- Camera Stream Container -->
+                <div class="relative bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                    
+                    <!-- Camera Placeholder / Permission Request Overlay -->
+                    <div id="camera-prompt" class="text-center p-4 space-y-2 z-10">
+                        <p class="text-xs text-slate-300">Camera access needed for object detection.</p>
+                        <button onclick="requestCameraPermission()" class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-emerald-700">
+                            📷 Enable Camera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Detected Item Display -->
+                <div id="detection-result" class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center">
+                    <div>
+                        <span class="text-2xs text-slate-400 block font-bold uppercase">AI Prediction</span>
+                        <span id="predicted-item" class="text-xs font-bold text-slate-700">No object detected</span>
+                    </div>
+                    <button onclick="logAIDisposal()" id="log-btn" disabled class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl opacity-50 cursor-not-allowed hover:bg-emerald-700">
+                        Log Waste
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ANALYTICS -->
+        <section id="tab-stats" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Classroom Statistics</h3>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
+                        <span id="stat-total" class="block text-2xl font-black text-emerald-600">0</span>
+                        <span class="text-xs font-medium text-emerald-800">Total Items Sorted</span>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <span id="stat-accuracy" class="block text-2xl font-black text-blue-600">0%</span>
+                        <span class="text-xs font-medium text-blue-800">Proper Sorting Rate</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Bin Accuracy Breakdown</h3>
+                <div id="bin-stats-list" class="space-y-2 text-xs"></div>
+            </div>
+        </section>
+
+        <!-- TAB 3: ADMIN CONTROL PANEL (Admin Only) -->
+        <section id="tab-admin" class="space-y-4 hidden">
+            <!-- Passcode Security -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Admin Security</h3>
+                <button onclick="changeAdminPasscode()" class="w-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold py-2 rounded-xl hover:bg-slate-200">
+                    🔑 Change Admin Passcode
+                </button>
+            </div>
+
+            <!-- Student CRUD Operations -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Manage Students</h3>
+                <form id="admin-student-form" onsubmit="handleAdminStudentSave(event)" class="space-y-2">
+                    <input type="text" id="admin-student-custom-id" placeholder="ID Number (e.g., 1 or 251-02131)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="text" id="admin-student-name" placeholder="Student Full Name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="text" id="admin-student-room" placeholder="Room / Section (e.g. Grade 11 Heisenberg)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="number" id="admin-student-points" placeholder="Points" value="0" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <div class="flex gap-2">
+                        <button type="submit" id="admin-student-submit-btn" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl hover:bg-emerald-700">Add Student</button>
+                        <button type="button" onclick="resetAdminStudentForm()" class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-2 rounded-xl">Clear</button>
+                    </div>
+                </form>
+
+                <div id="students-crud-list" class="space-y-2 max-h-56 overflow-y-auto text-xs pt-2"></div>
+            </div>
+
+            <!-- QR Code Generator -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">QR Code Generator</h3>
+                <div class="space-y-2">
+                    <select id="qr-gen-type" onchange="toggleQRGenInputs()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white">
+                        <option value="student">Student ID QR</option>
+                        <option value="bin">Bin Marker QR</option>
+                    </select>
+                    
+                    <div id="qr-student-select-wrap">
+                        <select id="qr-gen-student-select" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white"></select>
+                    </div>
+
+                    <div id="qr-bin-select-wrap" class="hidden">
+                        <select id="qr-gen-bin-select" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white">
+                            <option value="BIN_BIODEGRADABLE">Biodegradable Bin Marker</option>
+                            <option value="BIN_RECYCLABLE">Recyclable Bin Marker</option>
+                            <option value="BIN_RESIDUAL">Residual Bin Marker</option>
+                        </select>
+                    </div>
+
+                    <button onclick="generateQRCode()" class="w-full bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-slate-900">Generate QR Code</button>
+                </div>
+
+                <div id="qr-output-card" class="hidden border border-slate-200 rounded-xl p-4 text-center space-y-3 bg-slate-50">
+                    <div id="qrcode-canvas" class="flex justify-center"></div>
+                    <p id="qr-output-label" class="text-xs font-semibold text-slate-600"></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
     <!-- Navigation Bar -->
     <nav class="bg-white border-t border-slate-200 fixed bottom-0 left-0 right-0 z-50">
         <div class="max-w-md mx-auto grid grid-cols-3 py-2 text-center text-xs">
@@ -242,17 +437,16 @@
     </div>
 
     <script>
-        // Database State Initialization
-        let db = JSON.parse(localStorage.getItem('ecosort_v2_db')) || {
+        let db = JSON.parse(localStorage.getItem('ecosort_v3_db')) || {
             adminPasscode: "1234",
             students: [
-                { id: "STUDENT_001", name: "Jude Louise Loria", room: "Grade 11 Heisenberg", points: 40 },
-                { id: "STUDENT_002", name: "Maria Santos", room: "Grade 11 Heisenberg", points: 25 }
+                { id: "1", name: "Jude Louise Loria", room: "Grade 11 Heisenberg", points: 40 },
+                { id: "251-02131", name: "Maria Santos", room: "Grade 11 Heisenberg", points: 25 }
             ],
             disposals: []
         };
 
-        let currentRole = "student"; // "student" or "admin"
+        let currentRole = "student";
         let activeStudent = null;
         let activeBin = null;
         let detectedItemLabel = "";
@@ -270,11 +464,10 @@
         };
 
         function saveDB() {
-            localStorage.setItem('ecosort_v2_db', JSON.stringify(db));
+            localStorage.setItem('ecosort_v3_db', JSON.stringify(db));
             updateUI();
         }
 
-        // Passcode Protection & Admin Access
         function requestAdminAccess() {
             if (currentRole === "admin") {
                 currentRole = "student";
@@ -309,7 +502,6 @@
             }
         }
 
-        // QR Scan Login for Students
         function openQRLoginModal() {
             document.getElementById('modal-qr-login').classList.remove('hidden');
             html5QrScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 200 });
@@ -317,9 +509,7 @@
         }
 
         function closeQRLoginModal() {
-            if (html5QrScanner) {
-                html5QrScanner.clear();
-            }
+            if (html5QrScanner) html5QrScanner.clear();
             document.getElementById('modal-qr-login').classList.add('hidden');
         }
 
@@ -331,7 +521,7 @@
                 alert(`Welcome back, ${student.name}!`);
                 updateUI();
             } else {
-                alert(`Unrecognized Student QR Code: ${decodedText}`);
+                alert(`Unrecognized Student ID QR Code: ${decodedText}`);
             }
         }
 
@@ -340,7 +530,6 @@
             updateUI();
         }
 
-        // Student Self Edit
         function openSelfEditModal() {
             if (!activeStudent) return;
             document.getElementById('self-edit-name').value = activeStudent.name;
@@ -361,26 +550,22 @@
             closeSelfEditModal();
         }
 
-        // Admin Student CRUD
         function handleAdminStudentSave(e) {
             e.preventDefault();
-            let id = document.getElementById('admin-edit-student-id').value;
+            let customId = document.getElementById('admin-student-custom-id').value.trim();
             let name = document.getElementById('admin-student-name').value.trim();
             let room = document.getElementById('admin-student-room').value.trim();
             let points = parseInt(document.getElementById('admin-student-points').value) || 0;
 
-            if (id) {
-                // Edit existing
-                let student = db.students.find(s => s.id === id);
-                if (student) {
-                    student.name = name;
-                    student.room = room;
-                    student.points = points;
-                }
+            let existingIndex = db.students.findIndex(s => s.id === customId);
+            if (existingIndex >= 0) {
+                // Update
+                db.students[existingIndex].name = name;
+                db.students[existingIndex].room = room;
+                db.students[existingIndex].points = points;
             } else {
-                // Add new
-                let newId = "STUDENT_" + String(db.students.length + 1).padStart(3, '0');
-                db.students.push({ id: newId, name, room, points });
+                // Add new with custom ID
+                db.students.push({ id: customId, name, room, points });
             }
 
             resetAdminStudentForm();
@@ -390,7 +575,9 @@
         function editStudentAdmin(id) {
             let student = db.students.find(s => s.id === id);
             if (student) {
-                document.getElementById('admin-edit-student-id').value = student.id;
+                let idField = document.getElementById('admin-student-custom-id');
+                idField.value = student.id;
+                idField.disabled = true; // prevent primary ID corruption during edit
                 document.getElementById('admin-student-name').value = student.name;
                 document.getElementById('admin-student-room').value = student.room;
                 document.getElementById('admin-student-points').value = student.points;
@@ -408,11 +595,11 @@
 
         function resetAdminStudentForm() {
             document.getElementById('admin-student-form').reset();
-            document.getElementById('admin-edit-student-id').value = "";
+            let idField = document.getElementById('admin-student-custom-id');
+            idField.disabled = false;
             document.getElementById('admin-student-submit-btn').innerText = "Add Student";
         }
 
-        // QR Code Generator
         function toggleQRGenInputs() {
             let type = document.getElementById('qr-gen-type').value;
             document.getElementById('qr-student-select-wrap').classList.toggle('hidden', type !== 'student');
@@ -427,7 +614,7 @@
             if (type === 'student') {
                 textToEncode = document.getElementById('qr-gen-student-select').value;
                 let s = db.students.find(x => x.id === textToEncode);
-                label = s ? `${s.name} (${s.id})` : textToEncode;
+                label = s ? `${s.name} (ID: ${s.id})` : textToEncode;
             } else {
                 textToEncode = document.getElementById('qr-gen-bin-select').value;
                 label = textToEncode.replace('_', ' ');
@@ -448,7 +635,6 @@
             document.getElementById('qr-output-card').classList.remove('hidden');
         }
 
-        // Camera & AI Detection
         async function requestCameraPermission() {
             const video = document.getElementById('webcam');
             const prompt = document.getElementById('camera-prompt');
@@ -580,7 +766,6 @@
         }
 
         function updateUI() {
-            // Student Profile Banner UI
             const loggedOutView = document.getElementById('student-logged-out');
             const loggedInView = document.getElementById('student-logged-in');
 
@@ -589,7 +774,7 @@
                 loggedInView.classList.remove('hidden');
                 document.getElementById('profile-name').innerText = activeStudent.name;
                 document.getElementById('profile-room').innerText = activeStudent.room;
-                document.getElementById('profile-id').innerText = `ID: ${activeStudent.id}`;
+                document.getElementById('profile-id').innerText = `ID Number: ${activeStudent.id}`;
                 document.getElementById('profile-points').innerText = activeStudent.points;
                 document.getElementById('active-user-text').innerText = activeStudent.name;
             } else {
@@ -598,11 +783,10 @@
                 document.getElementById('active-user-text').innerText = "Not Logged In";
             }
 
-            // Admin Student List (CRUD UI)
             document.getElementById('students-crud-list').innerHTML = db.students.map(s => `
                 <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
                     <div>
-                        <span class="font-bold text-slate-700 block">${s.name}</span>
+                        <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 text-2xs">(ID: ${s.id})</span></span>
                         <span class="text-2xs text-slate-400">${s.room} • ${s.points} pts</span>
                     </div>
                     <div class="flex gap-1">
@@ -612,13 +796,11 @@
                 </div>
             `).join('');
 
-            // QR Generator Student Options
             document.getElementById('qr-gen-student-select').innerHTML = db.students.map(s => 
-                `<option value="${s.id}">${s.name} (${s.id})</option>`
+                `<option value="${s.id}">${s.name} (ID: ${s.id})</option>`
             ).join('');
         }
 
-        // Initial setup
         updateUI();
     </script>
 </body>
