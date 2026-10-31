@@ -1,0 +1,964 @@
+			<p style="margin-top:16.35pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;!DOCTYPE html&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;html lang="en"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;head&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;meta charset="UTF-8"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;title&gt;EcoSort AI Mobile&lt;/title&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Tailwind CSS for mobile UI --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"&gt;&lt;/script&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- TensorFlow.js and COCO-SSD for client-side object detection --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"&gt;&lt;/script&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:51.15pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"&gt;&lt;/script&gt; &lt;/head&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col pb-20"&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Header --&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:56.1pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;header class="bg-emerald-600 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h1 class="text-xl font-bold"&gt;</span><span style="font-size:11pt">🌱</span><span style="font-family:Arial; font-size:11pt"> EcoSort AI Mobile&lt;/h1&gt; </span>
+			</p>
+			<p style="margin-top:1.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;p class="text-xs text-emerald-100"&gt;AI Computer Vision Waste System&lt;/p&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:35.6pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="toggleRole()" id="role-btn" class="text-xs bg-emerald-800 border border-emerald-400 px-3 py-1.5 rounded-full font-semibold hover:bg-emerald-700"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">Role: Admin </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/header&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-left:12.2pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;!-- Main Content Area --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-left:12.2pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4"&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- STUDENT DASHBOARD (Shown in Student Mode) --&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:13.75pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;section id="student-dashboard" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md hidden"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:13.35pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h2 class="text-xs font-bold uppercase tracking-wider text-emerald-100"&gt;Logged-In Student&lt;/h2&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="flex justify-between items-center mt-1"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:7.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h3 id="student-name-display" class="text-lg font-bold"&gt;Jude Louise Loria&lt;/h3&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;p id="student-room-display" class="text-xs text-emerald-100"&gt;Grade 11 Heisenberg&lt;/p&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="text-right"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span id="student-points-display" class="text-2xl font-black"&gt;0&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="block text-xs text-emerald-100"&gt;Eco-Points&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:16.35pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/section&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- TAB 1: AI SCANNER &amp; DISPOSAL --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;section id="tab-scan" class="space-y-4"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Session Setup Card --&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:0.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3"&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h3 class="font-bold text-slate-700 text-sm"&gt;Step 1: Session Setup&lt;/h3&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="grid grid-cols-2 gap-2"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="selectStudent()" class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-left hover:bg-slate-100"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; text-align:justify; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="block text-xs text-slate-400 font-bold uppercase"&gt;User ID&lt;/span&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span id="active-user-text" class="text-sm font-semibold text-slate-700 truncate block"&gt;Select Student&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:16.2pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="selectBin()" class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-left hover:bg-slate-100"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:43.35pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="block text-xs text-slate-400 font-bold uppercase"&gt;Target Bin&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:3.4pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span id="active-bin-text" class="text-sm font-semibold text-slate-700 truncate block"&gt;Select Bin&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- AI Camera Detection Card --&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:0.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3"&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="flex justify-between items-center"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h3 class="font-bold text-slate-700 text-sm"&gt;Step 2: AI Waste Scanner&lt;/h3&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:19.9pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span id="ai-status" class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold"&gt;AI Offline&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Camera Stream Container --&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:48.15pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="relative bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:43.7pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"&gt;&lt;/video&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:122.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;canvas id="canvas" class="absolute inset-0 w-full h-full pointer-events-none"&gt;&lt;/canvas&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-left:61.1pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;!-- Camera Placeholder / Permission Request Overlay --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-left:61.1pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;div id="camera-prompt" class="text-center p-4 space-y-2 z-10"&gt; </span>
+			</p>
+			<p style="margin-top:14.1pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;p class="text-xs text-slate-300"&gt;Camera access is needed to scan waste items using AI.&lt;/p&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="requestCameraPermission()" class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-emerald-700"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-size:11pt">📷</span><span style="font-family:Arial; font-size:11pt"> Enable Camera </span>
+			</p>
+			<p style="margin-top:1.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Detected Item Display --&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:0.9pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div id="detection-result" class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:63.5pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="text-xs text-slate-400 block font-bold uppercase"&gt;AI Prediction&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:11.4pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span id="predicted-item" class="text-sm font-bold text-slate-700"&gt;No object detected&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:14.2pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="logAIDisposal()" id="log-btn" disabled class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl opacity-50 cursor-not-allowed hover:bg-emerald-700"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">Log Waste </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/section&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- TAB 2: ANALYTICS (Admin &amp; User) --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;section id="tab-stats" class="space-y-4 hidden"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h3 class="font-bold text-slate-700 text-sm"&gt;Classroom Waste Statistics&lt;/h3&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="grid grid-cols-2 gap-3 text-center"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span id="stat-total" class="block text-2xl font-black text-emerald-600"&gt;0&lt;/span&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="text-xs font-medium text-emerald-800"&gt;Total Items Sorted&lt;/span&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-blue-50 p-3 rounded-xl border border-blue-100"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:109.1pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span id="stat-accuracy" class="block text-2xl font-black text-blue-600"&gt;0%&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="text-xs font-medium text-blue-800"&gt;Proper Sorting Rate&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:14.1pt; margin-right:0.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3"&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h3 class="font-bold text-slate-700 text-sm"&gt;Bin Accuracy Ratios&lt;/h3&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div id="bin-stats-list" class="space-y-2 text-xs"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Populated dynamically --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/section&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- TAB 3: ROOMS &amp; ADMIN (Admin Only) --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;section id="tab-rooms" class="space-y-4 hidden"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:0.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3"&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h3 class="font-bold text-slate-700 text-sm"&gt;Register Student / User&lt;/h3&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:40.2pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;input type="text" id="new-student-name" placeholder="Student Full Name" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;select id="new-student-room" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:border-emerald-500"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;option value="Grade 11 Heisenberg"&gt;Grade 11 Heisenberg&lt;/option&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;option value="Grade 12 STEM-A"&gt;Grade 12 STEM-A&lt;/option&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/select&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="addStudent()" class="w-full bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-slate-900"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">Register Student </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:14.6pt; margin-right:0.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3"&gt;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;h3 class="font-bold text-slate-700 text-sm"&gt;Registered Students Ledger&lt;/h3&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div id="students-ledger" class="space-y-2 max-h-48 overflow-y-auto text-xs"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Populated dynamically --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/section&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-left:12.2pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;/main&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Navigation Bar --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;nav class="bg-white border-t border-slate-200 fixed bottom-0 left-0 right-0 z-50"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="max-w-md mx-auto grid grid-cols-3 py-2 text-center text-xs"&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:11.85pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="switchTab('scan')" id="nav-scan" class="text-emerald-600 font-bold space-y-0.5"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="block text-base"&gt;</span><span style="font-size:11pt">📷</span><span style="font-family:Arial; font-size:11pt">&lt;/span&gt; AI Sort </span>
+			</p>
+			<p style="margin-top:1.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:14.1pt; margin-right:5.15pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="switchTab('stats')" id="nav-stats" class="text-slate-400 font-semibold space-y-0.5"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="block text-base"&gt;</span><span style="font-size:11pt">📊</span><span style="font-family:Arial; font-size:11pt">&lt;/span&gt; Analytics </span>
+			</p>
+			<p style="margin-top:1.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;button onclick="switchTab('rooms')" id="nav-rooms" class="text-slate-400 font-semibold space-y-0.5"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="block text-base"&gt;</span><span style="font-size:11pt">🏫</span><span style="font-family:Arial; font-size:11pt">&lt;/span&gt; Admin </span>
+			</p>
+			<p style="margin-top:1.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/button&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/nav&gt; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;!-- Application JavaScript Logic --&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;script&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Database State </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let db = JSON.parse(localStorage.getItem('ecosort_ai_db')) || { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">students: [ </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:12.5pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">{ id: "S001", name: "Jude Louise Loria", room: "Grade 11 Heisenberg", points: 40 },</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">{ id: "S002", name: "Maria Santos", room: "Grade 11 Heisenberg", points: 25 } </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">], </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">disposals: [] </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">}; </span>
+			</p>
+			<p style="margin:14.6pt 198.2pt 0pt 24.45pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">let currentRole = "admin"; // "admin" or "student" let activeStudent = db.students[0]; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-left:24.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">let activeBin = null; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-left:24.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">let detectedItemLabel = ""; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-left:24.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">let cocoModel = null; </span>
+			</p>
+			<p style="margin-top:14.6pt; margin-right:115pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Rule Map: Maps COCO-SSD object classes to school bin types</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const ITEM_BIN_RULES = { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">"bottle": "Recyclable", </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">"cup": "Recyclable", </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">"cell phone": "Recyclable", </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">"book": "Recyclable", </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">"apple": "Biodegradable", </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">"banana": "Biodegradable", </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">"sandwich": "Biodegradable" </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">}; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function saveDB() { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:140.75pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">localStorage.setItem('ecosort_ai_db', JSON.stringify(db));</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">updateUI(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.35pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Camera Permission Request </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">async function requestCameraPermission() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const video = document.getElementById('webcam'); </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:126.4pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const prompt = document.getElementById('camera-prompt');</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const statusBadge = document.getElementById('ai-status'); </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">try { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:105.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const stream = await navigator.mediaDevices.getUserMedia({</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">video: { facingMode: "environment" }</span><span style="font-family:Arial; font-size:11pt">&#xa0; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">}); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">video.srcObject = stream; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">video.classList.remove('hidden'); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">prompt.classList.add('hidden'); </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">statusBadge.innerText = "Loading AI Model..."; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">statusBadge.className = "text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold"; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Load COCO-SSD Model (Mobile-friendly YOLO alternative) </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">cocoModel = await cocoSsd.load(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">statusBadge.innerText = "AI Live"; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:16.1pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">statusBadge.className = "text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold"; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">detectFrame(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} catch (err) { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:21.9pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">alert("Camera Permission Denied: Please allow camera access in your browser settings to run object detection."); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">console.error(err); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Continuous Object Detection Loop </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">async function detectFrame() { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:172pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const video = document.getElementById('webcam');</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (cocoModel &amp;&amp; video.readyState === 4) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const predictions = await cocoModel.detect(video); </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (predictions.length &gt; 0) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">detectedItemLabel = predictions[0].class; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:128.8pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('predicted-item').innerText = detectedItemLabel.toUpperCase(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">checkLogEligibility(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} else { </span>
+			</p>
+			<p style="margin-top:16.35pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">detectedItemLabel = ""; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:59.9pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('predicted-item').innerText = "Scanning...";</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">disableLogButton(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">requestAnimationFrame(detectFrame); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function checkLogEligibility() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const logBtn = document.getElementById('log-btn'); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (activeStudent &amp;&amp; activeBin &amp;&amp; detectedItemLabel) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">logBtn.disabled = false; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:132.5pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">logBtn.classList.remove('opacity-50', 'cursor-not-allowed');</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function disableLogButton() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">const logBtn = document.getElementById('log-btn'); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">logBtn.disabled = true; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:163pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">logBtn.classList.add('opacity-50', 'cursor-not-allowed');</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Session Setup Handlers </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function selectStudent() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let list = db.students.map((s, i) =&gt; `${i+1}. ${s.name} (${s.room})`).join('\n'); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let choice = prompt("Select Student:\n" + list); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let idx = parseInt(choice) - 1; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (!isNaN(idx) &amp;&amp; db.students[idx]) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">activeStudent = db.students[idx]; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:32.3pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('active-user-text').innerText = activeStudent.name;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">checkLogEligibility(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function selectBin() { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:2.5pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let choice = prompt("Select Bin Type:\n1. Biodegradable\n2. Recyclable\n3. Residual");</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (choice === "1") activeBin = "Biodegradable"; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">else if (choice === "2") activeBin = "Recyclable"; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">else if (choice === "3") activeBin = "Residual"; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (activeBin) { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:91.55pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('active-bin-text').innerText = activeBin;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">checkLogEligibility(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.35pt; margin-left:24.45pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Log AI Disposal Transaction </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function logAIDisposal() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (!activeStudent || !activeBin || !detectedItemLabel) return; </span>
+			</p>
+			<p style="margin:14.6pt 77.3pt 0pt 36.65pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">let expectedBin = ITEM_BIN_RULES[detectedItemLabel] || "Residual"; let isProper = (activeBin === expectedBin); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-left:36.65pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">let pointsEarned = isProper ? 10 : 0; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">db.disposals.push({ </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">studentId: activeStudent.id, </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">studentName: activeStudent.name, </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">bin: activeBin, </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">item: detectedItemLabel, </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">isProper: isProper, </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:193pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">timestamp: new Date().toLocaleTimeString()</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">}); </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (isProper) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let student = db.students.find(s =&gt; s.id === activeStudent.id); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (student) student.points += pointsEarned; </span>
+			</p>
+			<p style="margin-top:0.1pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">alert(`</span><span style="font-size:11pt">🎉</span><span style="font-family:Arial; font-size:11pt"> SUCCESS! Item '${detectedItemLabel}' properly placed in ${activeBin} Bin. +10 Eco-Points!`); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} else { </span>
+			</p>
+			<p style="margin-top:0.1pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">alert(`</span><span style="font-size:11pt">❌</span><span style="font-family:Arial; font-size:11pt"> MIS-SORTED! '${detectedItemLabel}' belongs in the ${expectedBin} Bin, not ${activeBin}. 0 points awarded.`); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.8pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">saveDB(); </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Role &amp; Tab Navigation </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function toggleRole() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">currentRole = (currentRole === "admin") ? "student" : "admin"; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:11.3pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('role-btn').innerText = `Role: ${currentRole === "admin" ? "Admin" : "Student"}`; </span>
+			</p>
+			<p style="margin:14.6pt 119.6pt 0pt 36.65pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">const dash = document.getElementById('student-dashboard'); const adminNav = document.getElementById('nav-rooms'); </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (currentRole === "student") { </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">dash.classList.remove('hidden'); </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">adminNav.classList.add('hidden'); </span>
+			</p>
+			<p style="margin-top:16.35pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} else { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">dash.classList.add('hidden'); </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">adminNav.classList.remove('hidden'); </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function switchTab(tab) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">['scan', 'stats', 'rooms'].forEach(t =&gt; { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById(`tab-${t}`).classList.add('hidden'); </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:17.3pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById(`nav-${t}`).className = "text-slate-400 font-semibold space-y-0.5"; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">}); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById(`tab-${tab}`).classList.remove('hidden'); </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:24pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById(`nav-${tab}`).className = "text-emerald-600 font-bold space-y-0.5"; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (tab === 'stats') renderStats(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Admin Actions </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function addStudent() { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:73.25pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let name = document.getElementById('new-student-name').value.trim();</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let room = document.getElementById('new-student-room').value; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (name &amp;&amp; room) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let id = "S0" + (db.students.length + 1); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">db.students.push({ id, name, room, points: 0 }); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('new-student-name').value = ""; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">saveDB(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function renderStats() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let total = db.disposals.length; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('stat-total').innerText = total; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (total === 0) { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('stat-accuracy').innerText = "0%"; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:18pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('bin-stats-list').innerHTML = `&lt;p class="text-slate-400 text-center py-2"&gt;No records logged yet.&lt;/p&gt;`; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">return; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let proper = db.disposals.filter(d =&gt; d.isProper).length; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('stat-accuracy').innerText = Math.round((proper / total) * 100) + "%"; </span>
+			</p>
+			<p style="margin-top:30.8pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let bins = ["Biodegradable", "Recyclable", "Residual"]; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let listHTML = bins.map(b =&gt; { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let items = db.disposals.filter(d =&gt; d.bin === b); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let correct = items.filter(d =&gt; d.isProper).length; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let rate = items.length &gt; 0 ? Math.round((correct / items.length) * 100) : 0; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">return ` </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:4.15pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="font-semibold text-slate-700"&gt;${b} Bin&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:18.25pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="font-bold text-emerald-600"&gt;${rate}% Proper (${items.length} items)&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">`; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">}).join(''); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('bin-stats-list').innerHTML = listHTML; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">function updateUI() { </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Update Student Ledger </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">let ledgerHTML = db.students.map(s =&gt; ` </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:16.4pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100"&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="font-semibold text-slate-700"&gt;${s.name}&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="block text-slate-400 text-2xs"&gt;${s.room}&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:59.75pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md"&gt;${s.points} pts&lt;/span&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/div&gt; </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">`).join(''); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('students-ledger').innerHTML = ledgerHTML; </span>
+			</p>
+			<p style="margin-top:16.85pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Update Active Student UI Displays </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">if (activeStudent) { </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:2.35pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('student-name-display').innerText = activeStudent.name;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('student-room-display').innerText = activeStudent.room; </span>
+			</p>
+			<p style="margin-top:0.05pt; margin-right:5pt; margin-bottom:0pt; line-height:14.5pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">document.getElementById('student-points-display').innerText = activeStudent.points;</span><span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">} </span>
+			</p>
+			<p style="margin-top:16.8pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">// Initial Setup </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">updateUI(); </span>
+			</p>
+			<p style="margin-top:2.3pt; margin-bottom:0pt; text-align:justify; line-height:12.25pt">
+				<span style="font-family:Arial; font-size:11pt">&#xa0;&#xa0;&#xa0; </span><span style="font-family:Arial; font-size:11pt">&lt;/script&gt; </span>
+			</p>
+			<p style="margin-top:16.35pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;/body&gt; </span>
+			</p>
+			<p style="margin-top:2.25pt; margin-bottom:0pt; text-align:justify; line-height:12.3pt">
+				<span style="font-family:Arial; font-size:11pt">&lt;/html&gt; </span>
+			</p>
+	<p style="bottom: 10px; right: 10px; position: absolute;"><a href="https://wordtohtml.net/?utm_source=wth_free_doc_conversion_link&utm_medium=external" target="_blank" style="font-size:11px; color: #d0d0d0">Converted to HTML with WordToHTML.net</a><span style="font-size:11px; color: #d0d0d0"> | </span><a href="https://documentconverter.pro/?utm_source=wth_free_doc_conversion_link&utm_medium=external" target="_blank" style="font-size:11px; color: #d0d0d0">Document Converter for Windows</a></p>
