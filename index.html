@@ -272,20 +272,21 @@
     <!-- SECTION 7: CORE JAVASCRIPT & LOGIC ENGINE  -->
     <!-- ========================================== -->
     <script>
-        // Firebase Configuration (Replace with your own database keys)
+        // Firebase Configuration
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCDL33ghFga0OLxYluWyr2XB5_0-jRPR7M",
+            authDomain: "ecosort-998db.firebaseapp.com",
+            databaseURL: "https://ecosort-998db-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ecosort-998db",
+            storageBucket: "ecosort-998db.firebasestorage.app",
+            messagingSenderId: "286662267404",
+            appId: "1:286662267404:web:ef3c391b6574b70b981429",
+            measurementId: "G-E7C935KX2Q"
         };
 
         firebase.initializeApp(firebaseConfig);
         const dbRef = firebase.database().ref('ecosort_system');
-
+        
         let db = {
             adminPasscode: "1234",
             students: [],
