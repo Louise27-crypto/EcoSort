@@ -330,6 +330,7 @@
             }
         }
 
+
         // CSV Data Exporter
         function exportCSVData() {
             let disposals = db.disposals || [];
@@ -340,3 +341,955 @@
             let csvContent = "data:text/csv;charset=utf-8,Student ID,Student Name,Bin,Item,Properly Sorted,Timestamp\n";
             disposals.forEach(d => {
                 csvContent += `"${d.studentId}","${d.studentName}","${d.bin}","${d.item}","${d.isProper ? 'YES' : 'NO'}","${d.timestamp}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `ecosort_data_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+
+        dbRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                db = data;
+                if (!db.students) db.students = [];
+                if (!db.disposals) db.disposals = [];
+                
+                if (activeStudent) {
+                    let updated = db.students.find(s => s.id === activeStudent.id);
+                    if (updated) activeStudent = updated;
+                }
+                
+                document.getElementById('sync-status').className = "inline-block w-2 h-2 rounded-full bg-emerald-400";
+            } else {
+                saveDB();
+            }
+            updateUI();
+        });
+
+
+        function saveDB() {
+            dbRef.set(db);
+        }
+
+
+        function requestAdminAccess() {
+            if (currentRole === "admin") {
+                currentRole = "student";
+                document.getElementById('role-btn').innerText = "Role: Student";
+                document.getElementById('nav-admin').classList.add('hidden');
+                switchTab('scan');
+                return;
+            }
+
+
+            let inputPin = prompt("Enter Admin Passcode:");
+            if (inputPin === db.adminPasscode) {
+                currentRole = "admin";
+                document.getElementById('role-btn').innerText = "Role: Admin";
+                document.getElementById('nav-admin').classList.remove('hidden');
+                switchTab('admin');
+            } else if (inputPin !== null) {
+                alert("Incorrect passcode!");
+            }
+        }
+
+
+        function changeAdminPasscode() {
+            let current = prompt("Enter current admin passcode:");
+            if (current === db.adminPasscode) {
+                let newPass = prompt("Enter new passcode:");
+                if (newPass && newPass.trim().length > 0) {
+                    db.adminPasscode = newPass.trim();
+                    saveDB();
+                    alert("Admin passcode updated across all devices!");
+                }
+            } else if (current !== null) {
+                alert("Incorrect current passcode.");
+            }
+        }
+
+
+        function openQRLoginModal() {
+            document.getElementById('modal-qr-login').classList.remove('hidden');
+            html5QrScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 200 });
+            html5QrScanner.render(onScanSuccess);
+        }
+
+
+        function closeQRLoginModal() {
+            if (html5QrScanner) html5QrScanner.clear();
+            document.getElementById('modal-qr-login').classList.add('hidden');
+        }
+
+
+        function onScanSuccess(decodedText) {
+            closeQRLoginModal();
+            let student = db.students.find(s => s.id === decodedText.trim());
+            if (student) {
+                activeStudent = student;
+                alert(`Welcome back, ${student.name} (@${student.username})!`);
+                updateUI();
+            } else {
+                alert(`Unrecognized Student ID QR Code: ${decodedText}`);
+            }
+        }
+
+
+        function studentLogout() {
+            activeStudent = null;
+            updateUI();
+        }
+
+
+        function openSelfEditModal() {
+            if (!activeStudent) return;
+            document.getElementById('self-edit-username').value = activeStudent.username || "";
+            document.getElementById('self-edit-name').value = activeStudent.name;
+            document.getElementById('self-edit-room').value = activeStudent.room;
+            document.getElementById('modal-self-edit').classList.remove('hidden');
+        }
+
+
+        function closeSelfEditModal() {
+            document.getElementById('modal-self-edit').classList.add('hidden');
+        }
+
+
+        function handleSelfEditSave(e) {
+            e.preventDefault();
+            if (!activeStudent) return;
+            activeStudent.username = document.getElementById('self-edit-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+            activeStudent.name = document.getElementById('self-edit-name').value.trim();
+            activeStudent.room = document.getElementById('self-edit-room').value.trim();
+            saveDB();
+            closeSelfEditModal();
+        }
+
+
+        function handleAdminStudentSave(e) {
+            e.preventDefault();
+            let customId = document.getElementById('admin-student-custom-id').value.trim();
+            let username = document.getElementById('admin-student-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+            let name = document.getElementById('admin-student-name').value.trim();
+            let room = document.getElementById('admin-student-room').value.trim();
+            let points = parseInt(document.getElementById('admin-student-points').value) || 0;
+
+
+            let existingIndex = db.students.findIndex(s => s.id === customId);
+            if (existingIndex >= 0) {
+                db.students[existingIndex].username = username;
+                db.students[existingIndex].name = name;
+                db.students[existingIndex].room = room;
+                db.students[existingIndex].points = points;
+            } else {
+                db.students.push({ id: customId, username, name, room, points });
+            }
+
+
+            resetAdminStudentForm();
+            saveDB();
+        }
+
+
+        function editStudentAdmin(id) {
+            let student = db.students.find(s => s.id === id);
+            if (student) {
+                let idField = document.getElementById('admin-student-custom-id');
+                idField.value = student.id;
+                idField.disabled = true;
+                document.getElementById('admin-student-username').value = student.username || "";
+                document.getElementById('admin-student-name').value = student.name;
+                document.getElementById('admin-student-room').value = student.room;
+                document.getElementById('admin-student-points').value = student.points;
+                document.getElementById('admin-student-submit-btn').innerText = "Update Student";
+            }
+        }
+
+
+        function deleteStudentAdmin(id) {
+            if (confirm("Are you sure you want to delete this student record?")) {
+                db.students = db.students.filter(s => s.id !== id);
+                if (activeStudent && activeStudent.id === id) activeStudent = null;
+                saveDB();
+            }
+        }
+
+
+        function resetAdminStudentForm() {
+            document.getElementById('admin-student-form').reset();
+            let idField = document.getElementById('admin-student-custom-id');
+            idField.disabled = false;
+            document.getElementById('admin-student-submit-btn').innerText = "Add Student";
+        }
+
+
+        function toggleQRGenInputs() {
+            let type = document.getElementById('qr-gen-type').value;
+            document.getElementById('qr-student-select-wrap').classList.toggle('hidden', type !== 'student');
+            document.getElementById('qr-bin-select-wrap').classList.toggle('hidden', type !== 'bin');
+        }
+
+
+        function generateQRCode() {
+            let type = document.getElementById('qr-gen-type').value;
+            let textToEncode = "";
+            let label = "";
+
+
+            if (type === 'student') {
+                textToEncode = document.getElementById('qr-gen-student-select').value;
+                let s = db.students.find(x => x.id === textToEncode);
+                label = s ? `${s.name} (@${s.username || 'user'})` : textToEncode;
+            } else {
+                textToEncode = document.getElementById('qr-gen-bin-select').value;
+                label = textToEncode.replace('_', ' ');
+            }
+
+
+            if (!textToEncode) return;
+
+
+            let canvasContainer = document.getElementById('qrcode-canvas');
+            canvasContainer.innerHTML = "";
+            
+            new QRCode(canvasContainer, {
+                text: textToEncode,
+                width: 160,
+                height: 160
+            });
+
+
+            document.getElementById('qr-output-label').innerText = label;
+            document.getElementById('qr-output-card').classList.remove('hidden');
+        }
+
+
+        async function requestCameraPermission() {
+            const video = document.getElementById('webcam');
+            const prompt = document.getElementById('camera-prompt');
+            const statusBadge = document.getElementById('ai-status');
+
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                prompt.classList.add('hidden');
+                
+                statusBadge.innerText = "Loading AI...";
+                statusBadge.className = "text-2xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold";
+
+
+                cocoModel = await cocoSsd.load();
+                statusBadge.innerText = "AI Live";
+                statusBadge.className = "text-2xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold";
+                
+                detectFrame();
+            } catch (err) {
+                alert("Camera access denied.");
+            }
+        }
+
+
+        async function detectFrame() {
+            const video = document.getElementById('webcam');
+            if (cocoModel && video.readyState === 4) {
+                const predictions = await cocoModel.detect(video);
+                if (predictions.length > 0) {
+                    detectedItemLabel = predictions[0].class;
+                    document.getElementById('predicted-item').innerText = detectedItemLabel.toUpperCase();
+                    checkLogEligibility();
+                } else {
+                    detectedItemLabel = "";
+                    document.getElementById('predicted-item').innerText = "Scanning...";
+                    disableLogButton();
+                }
+            }
+            requestAnimationFrame(detectFrame);
+        }
+
+
+        function checkLogEligibility() {
+            const logBtn = document.getElementById('log-btn');
+            if (activeStudent && activeBin && detectedItemLabel) {
+                logBtn.disabled = false;
+                logBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+
+        function disableLogButton() {
+            const logBtn = document.getElementById('log-btn');
+            logBtn.disabled = true;
+            logBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+
+        function selectBin() {
+            let choice = prompt("Select Target Bin:\n1. Biodegradable\n2. Recyclable\n3. Residual");
+            if (choice === "1") activeBin = "Biodegradable";
+            else if (choice === "2") activeBin = "Recyclable";
+            else if (choice === "3") activeBin = "Residual";
+            
+            if (activeBin) {
+                document.getElementById('active-bin-text').innerText = activeBin;
+                checkLogEligibility();
+            }
+        }
+
+
+        function logAIDisposal() {
+            if (!activeStudent || !activeBin || !detectedItemLabel) return;
+
+
+            let expectedBin = ITEM_BIN_RULES[detectedItemLabel] || "Residual";
+            let isProper = (activeBin === expectedBin);
+            let pointsEarned = isProper ? 10 : 0;
+
+
+            if (!db.disposals) db.disposals = [];
+
+
+            db.disposals.push({
+                studentId: activeStudent.id,
+                studentName: activeStudent.name,
+                bin: activeBin,
+                item: detectedItemLabel,
+                isProper: isProper,
+                timestamp: new Date().toLocaleTimeString()
+            });
+
+
+            playFeedbackSound(isProper);
+
+
+            if (isProper) {
+                activeStudent.points += pointsEarned;
+                alert(`🎉 SUCCESS! '${detectedItemLabel}' placed in ${activeBin} Bin. +10 Eco-Points!`);
+            } else {
+                alert(`❌ MIS-SORTED! '${detectedItemLabel}' belongs in ${expectedBin} Bin.`);
+            }
+
+
+            saveDB();
+        }
+
+
+        function switchTab(tab) {
+            ['scan', 'stats', 'admin'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "text-slate-400 font-semibold space-y-0.5";
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).className = "text-emerald-600 font-bold space-y-0.5";
+            if (tab === 'stats') {
+                renderLeaderboard();
+                renderStats();
+            }
+        }
+
+
+        function renderLeaderboard() {
+            let filter = document.getElementById('leaderboard-filter').value;
+            let students = [...(db.students || [])];
+
+
+            if (filter !== 'ALL') {
+                students = students.filter(s => s.room === filter);
+            }
+
+
+            students.sort((a, b) => b.points - a.points);
+
+
+            if (students.length === 0) {
+                document.getElementById('leaderboard-list').innerHTML = `<p class="text-slate-400 text-center py-2">No students registered yet.</p>`;
+                return;
+            }
+
+
+            document.getElementById('leaderboard-list').innerHTML = students.slice(0, 5).map((s, idx) => `
+                <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 text-center font-bold text-slate-400">${idx + 1}.</span>
+                        <div>
+                            <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
+                            <span class="text-2xs text-slate-400">${s.room}</span>
+                        </div>
+                    </div>
+                    <span class="font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-lg">${s.points} pts</span>
+                </div>
+            `).join('');
+        }
+
+
+        function renderStats() {
+            let disposals = db.disposals || [];
+            let total = disposals.length;
+            document.getElementById('stat-total').innerText = total;
+
+
+            if (total === 0) {
+                document.getElementById('stat-accuracy').innerText = "0%";
+                document.getElementById('bin-stats-list').innerHTML = `<p class="text-slate-400 text-center py-2">No records logged yet.</p>`;
+                return;
+            }
+
+
+            let proper = disposals.filter(d => d.isProper).length;
+            document.getElementById('stat-accuracy').innerText = Math.round((proper / total) * 100) + "%";
+
+
+            let bins = ["Biodegradable", "Recyclable", "Residual"];
+            document.getElementById('bin-stats-list').innerHTML = bins.map(b => {
+                let items = disposals.filter(d => d.bin === b);
+                let correct = items.filter(d => d.isProper).length;
+                let rate = items.length > 0 ? Math.round((correct / items.length) * 100) : 0;
+                return `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <span class="font-semibold text-slate-700">${b} Bin</span>
+                        <span class="font-bold text-emerald-600">${rate}% Proper (${items.length} items)</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+
+        function updateUI() {
+            const loggedOutView = document.getElementById('student-logged-out');
+            const loggedInView = document.getElementById('student-logged-in');
+
+
+            if (activeStudent) {
+                loggedOutView.classList.add('hidden');
+                loggedInView.classList.remove('hidden');
+                document.getElementById('profile-name').innerText = activeStudent.name;
+                document.getElementById('profile-username').innerText = `@${activeStudent.username || 'user'}`;
+                document.getElementById('profile-room').innerText = activeStudent.room;
+                document.getElementById('profile-id').innerText = `ID Number: ${activeStudent.id}`;
+                document.getElementById('profile-points').innerText = activeStudent.points;
+                document.getElementById('active-user-text').innerText = `${activeStudent.name} (@${activeStudent.username || 'user'})`;
+            } else {
+                loggedOutView.classList.remove('hidden');
+                loggedInView.classList.add('hidden');
+                document.getElementById('active-user-text').innerText = "Not Logged In";
+            }// Synthesized Audio & Haptic Feedback Engine
+        function playFeedbackSound(isSuccess) {
+            if (navigator.vibrate) {
+                navigator.vibrate(isSuccess ? [100, 50, 100] : [300]);
+            }
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (isSuccess) {
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 0.4);
+                }
+            } catch (e) {
+                console.log("Audio playback not supported or user interacted yet.");
+            }
+        }
+
+
+        // CSV Data Exporter
+        function exportCSVData() {
+            let disposals = db.disposals || [];
+            if (disposals.length === 0) {
+                alert("No disposal records to export.");
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,Student ID,Student Name,Bin,Item,Properly Sorted,Timestamp\n";
+            disposals.forEach(d => {
+                csvContent += `"${d.studentId}","${d.studentName}","${d.bin}","${d.item}","${d.isProper ? 'YES' : 'NO'}","${d.timestamp}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `ecosort_data_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+
+        dbRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                db = data;
+                if (!db.students) db.students = [];
+                if (!db.disposals) db.disposals = [];
+                
+                if (activeStudent) {
+                    let updated = db.students.find(s => s.id === activeStudent.id);
+                    if (updated) activeStudent = updated;
+                }
+                
+                document.getElementById('sync-status').className = "inline-block w-2 h-2 rounded-full bg-emerald-400";
+            } else {
+                saveDB();
+            }
+            updateUI();
+        });
+
+
+        function saveDB() {
+            dbRef.set(db);
+        }
+
+
+        function requestAdminAccess() {
+            if (currentRole === "admin") {
+                currentRole = "student";
+                document.getElementById('role-btn').innerText = "Role: Student";
+                document.getElementById('nav-admin').classList.add('hidden');
+                switchTab('scan');
+                return;
+            }
+
+
+            let inputPin = prompt("Enter Admin Passcode:");
+            if (inputPin === db.adminPasscode) {
+                currentRole = "admin";
+                document.getElementById('role-btn').innerText = "Role: Admin";
+                document.getElementById('nav-admin').classList.remove('hidden');
+                switchTab('admin');
+            } else if (inputPin !== null) {
+                alert("Incorrect passcode!");
+            }
+        }
+
+
+        function changeAdminPasscode() {
+            let current = prompt("Enter current admin passcode:");
+            if (current === db.adminPasscode) {
+                let newPass = prompt("Enter new passcode:");
+                if (newPass && newPass.trim().length > 0) {
+                    db.adminPasscode = newPass.trim();
+                    saveDB();
+                    alert("Admin passcode updated across all devices!");
+                }
+            } else if (current !== null) {
+                alert("Incorrect current passcode.");
+            }
+        }
+
+
+        function openQRLoginModal() {
+            document.getElementById('modal-qr-login').classList.remove('hidden');
+            html5QrScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 200 });
+            html5QrScanner.render(onScanSuccess);
+        }
+
+
+        function closeQRLoginModal() {
+            if (html5QrScanner) html5QrScanner.clear();
+            document.getElementById('modal-qr-login').classList.add('hidden');
+        }
+
+
+        function onScanSuccess(decodedText) {
+            closeQRLoginModal();
+            let student = db.students.find(s => s.id === decodedText.trim());
+            if (student) {
+                activeStudent = student;
+                alert(`Welcome back, ${student.name} (@${student.username})!`);
+                updateUI();
+            } else {
+                alert(`Unrecognized Student ID QR Code: ${decodedText}`);
+            }
+        }
+
+
+        function studentLogout() {
+            activeStudent = null;
+            updateUI();
+        }
+
+
+        function openSelfEditModal() {
+            if (!activeStudent) return;
+            document.getElementById('self-edit-username').value = activeStudent.username || "";
+            document.getElementById('self-edit-name').value = activeStudent.name;
+            document.getElementById('self-edit-room').value = activeStudent.room;
+            document.getElementById('modal-self-edit').classList.remove('hidden');
+        }
+
+
+        function closeSelfEditModal() {
+            document.getElementById('modal-self-edit').classList.add('hidden');
+        }
+
+
+        function handleSelfEditSave(e) {
+            e.preventDefault();
+            if (!activeStudent) return;
+            activeStudent.username = document.getElementById('self-edit-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+            activeStudent.name = document.getElementById('self-edit-name').value.trim();
+            activeStudent.room = document.getElementById('self-edit-room').value.trim();
+            saveDB();
+            closeSelfEditModal();
+        }
+
+
+        function handleAdminStudentSave(e) {
+            e.preventDefault();
+            let customId = document.getElementById('admin-student-custom-id').value.trim();
+            let username = document.getElementById('admin-student-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+            let name = document.getElementById('admin-student-name').value.trim();
+            let room = document.getElementById('admin-student-room').value.trim();
+            let points = parseInt(document.getElementById('admin-student-points').value) || 0;
+
+
+            let existingIndex = db.students.findIndex(s => s.id === customId);
+            if (existingIndex >= 0) {
+                db.students[existingIndex].username = username;
+                db.students[existingIndex].name = name;
+                db.students[existingIndex].room = room;
+                db.students[existingIndex].points = points;
+            } else {
+                db.students.push({ id: customId, username, name, room, points });
+            }
+
+
+            resetAdminStudentForm();
+            saveDB();
+        }
+
+
+        function editStudentAdmin(id) {
+            let student = db.students.find(s => s.id === id);
+            if (student) {
+                let idField = document.getElementById('admin-student-custom-id');
+                idField.value = student.id;
+                idField.disabled = true;
+                document.getElementById('admin-student-username').value = student.username || "";
+                document.getElementById('admin-student-name').value = student.name;
+                document.getElementById('admin-student-room').value = student.room;
+                document.getElementById('admin-student-points').value = student.points;
+                document.getElementById('admin-student-submit-btn').innerText = "Update Student";
+            }
+        }
+
+
+        function deleteStudentAdmin(id) {
+            if (confirm("Are you sure you want to delete this student record?")) {
+                db.students = db.students.filter(s => s.id !== id);
+                if (activeStudent && activeStudent.id === id) activeStudent = null;
+                saveDB();
+            }
+        }
+
+
+        function resetAdminStudentForm() {
+            document.getElementById('admin-student-form').reset();
+            let idField = document.getElementById('admin-student-custom-id');
+            idField.disabled = false;
+            document.getElementById('admin-student-submit-btn').innerText = "Add Student";
+        }
+
+
+        function toggleQRGenInputs() {
+            let type = document.getElementById('qr-gen-type').value;
+            document.getElementById('qr-student-select-wrap').classList.toggle('hidden', type !== 'student');
+            document.getElementById('qr-bin-select-wrap').classList.toggle('hidden', type !== 'bin');
+        }
+
+
+        function generateQRCode() {
+            let type = document.getElementById('qr-gen-type').value;
+            let textToEncode = "";
+            let label = "";
+
+
+            if (type === 'student') {
+                textToEncode = document.getElementById('qr-gen-student-select').value;
+                let s = db.students.find(x => x.id === textToEncode);
+                label = s ? `${s.name} (@${s.username || 'user'})` : textToEncode;
+            } else {
+                textToEncode = document.getElementById('qr-gen-bin-select').value;
+                label = textToEncode.replace('_', ' ');
+            }
+
+
+            if (!textToEncode) return;
+
+
+            let canvasContainer = document.getElementById('qrcode-canvas');
+            canvasContainer.innerHTML = "";
+            
+            new QRCode(canvasContainer, {
+                text: textToEncode,
+                width: 160,
+                height: 160
+            });
+
+
+            document.getElementById('qr-output-label').innerText = label;
+            document.getElementById('qr-output-card').classList.remove('hidden');
+        }
+
+
+        async function requestCameraPermission() {
+            const video = document.getElementById('webcam');
+            const prompt = document.getElementById('camera-prompt');
+            const statusBadge = document.getElementById('ai-status');
+
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                prompt.classList.add('hidden');
+                
+                statusBadge.innerText = "Loading AI...";
+                statusBadge.className = "text-2xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold";
+
+
+                cocoModel = await cocoSsd.load();
+                statusBadge.innerText = "AI Live";
+                statusBadge.className = "text-2xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold";
+                
+                detectFrame();
+            } catch (err) {
+                alert("Camera access denied.");
+            }
+        }
+
+
+        async function detectFrame() {
+            const video = document.getElementById('webcam');
+            if (cocoModel && video.readyState === 4) {
+                const predictions = await cocoModel.detect(video);
+                if (predictions.length > 0) {
+                    detectedItemLabel = predictions[0].class;
+                    document.getElementById('predicted-item').innerText = detectedItemLabel.toUpperCase();
+                    checkLogEligibility();
+                } else {
+                    detectedItemLabel = "";
+                    document.getElementById('predicted-item').innerText = "Scanning...";
+                    disableLogButton();
+                }
+            }
+            requestAnimationFrame(detectFrame);
+        }
+
+
+        function checkLogEligibility() {
+            const logBtn = document.getElementById('log-btn');
+            if (activeStudent && activeBin && detectedItemLabel) {
+                logBtn.disabled = false;
+                logBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+
+        function disableLogButton() {
+            const logBtn = document.getElementById('log-btn');
+            logBtn.disabled = true;
+            logBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+
+        function selectBin() {
+            let choice = prompt("Select Target Bin:\n1. Biodegradable\n2. Recyclable\n3. Residual");
+            if (choice === "1") activeBin = "Biodegradable";
+            else if (choice === "2") activeBin = "Recyclable";
+            else if (choice === "3") activeBin = "Residual";
+            
+            if (activeBin) {
+                document.getElementById('active-bin-text').innerText = activeBin;
+                checkLogEligibility();
+            }
+        }
+
+
+        function logAIDisposal() {
+            if (!activeStudent || !activeBin || !detectedItemLabel) return;
+
+
+            let expectedBin = ITEM_BIN_RULES[detectedItemLabel] || "Residual";
+            let isProper = (activeBin === expectedBin);
+            let pointsEarned = isProper ? 10 : 0;
+
+
+            if (!db.disposals) db.disposals = [];
+
+
+            db.disposals.push({
+                studentId: activeStudent.id,
+                studentName: activeStudent.name,
+                bin: activeBin,
+                item: detectedItemLabel,
+                isProper: isProper,
+                timestamp: new Date().toLocaleTimeString()
+            });
+
+
+            playFeedbackSound(isProper);
+
+
+            if (isProper) {
+                activeStudent.points += pointsEarned;
+                alert(`🎉 SUCCESS! '${detectedItemLabel}' placed in ${activeBin} Bin. +10 Eco-Points!`);
+            } else {
+                alert(`❌ MIS-SORTED! '${detectedItemLabel}' belongs in ${expectedBin} Bin.`);
+            }
+
+
+            saveDB();
+        }
+
+
+        function switchTab(tab) {
+            ['scan', 'stats', 'admin'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "text-slate-400 font-semibold space-y-0.5";
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).className = "text-emerald-600 font-bold space-y-0.5";
+            if (tab === 'stats') {
+                renderLeaderboard();
+                renderStats();
+            }
+        }
+
+
+        function renderLeaderboard() {
+            let filter = document.getElementById('leaderboard-filter').value;
+            let students = [...(db.students || [])];
+
+
+            if (filter !== 'ALL') {
+                students = students.filter(s => s.room === filter);
+            }
+
+
+            students.sort((a, b) => b.points - a.points);
+
+
+            if (students.length === 0) {
+                document.getElementById('leaderboard-list').innerHTML = `<p class="text-slate-400 text-center py-2">No students registered yet.</p>`;
+                return;
+            }
+
+
+            document.getElementById('leaderboard-list').innerHTML = students.slice(0, 5).map((s, idx) => `
+                <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 text-center font-bold text-slate-400">${idx + 1}.</span>
+                        <div>
+                            <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
+                            <span class="text-2xs text-slate-400">${s.room}</span>
+                        </div>
+                    </div>
+                    <span class="font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-lg">${s.points} pts</span>
+                </div>
+            `).join('');
+        }
+
+
+        function renderStats() {
+            let disposals = db.disposals || [];
+            let total = disposals.length;
+            document.getElementById('stat-total').innerText = total;
+
+
+            if (total === 0) {
+                document.getElementById('stat-accuracy').innerText = "0%";
+                document.getElementById('bin-stats-list').innerHTML = `<p class="text-slate-400 text-center py-2">No records logged yet.</p>`;
+                return;
+            }
+
+
+            let proper = disposals.filter(d => d.isProper).length;
+            document.getElementById('stat-accuracy').innerText = Math.round((proper / total) * 100) + "%";
+
+
+            let bins = ["Biodegradable", "Recyclable", "Residual"];
+            document.getElementById('bin-stats-list').innerHTML = bins.map(b => {
+                let items = disposals.filter(d => d.bin === b);
+                let correct = items.filter(d => d.isProper).length;
+                let rate = items.length > 0 ? Math.round((correct / items.length) * 100) : 0;
+                return `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <span class="font-semibold text-slate-700">${b} Bin</span>
+                        <span class="font-bold text-emerald-600">${rate}% Proper (${items.length} items)</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+
+        function updateUI() {
+            const loggedOutView = document.getElementById('student-logged-out');
+            const loggedInView = document.getElementById('student-logged-in');
+
+
+            if (activeStudent) {
+                loggedOutView.classList.add('hidden');
+                loggedInView.classList.remove('hidden');
+                document.getElementById('profile-name').innerText = activeStudent.name;
+                document.getElementById('profile-username').innerText = `@${activeStudent.username || 'user'}`;
+                document.getElementById('profile-room').innerText = activeStudent.room;
+                document.getElementById('profile-id').innerText = `ID Number: ${activeStudent.id}`;
+                document.getElementById('profile-points').innerText = activeStudent.points;
+                document.getElementById('active-user-text').innerText = `${activeStudent.name} (@${activeStudent.username || 'user'})`;
+            } else {
+                loggedOutView.classList.remove('hidden');
+                loggedInView.classList.add('hidden');
+                document.getElementById('active-user-text').innerText = "Not Logged In";
+            }
+
+
+            let students = db.students || [];
+
+            // Update Leaderboard Room Filter Options dynamically
+            let rooms = [...new Set(students.map(s => s.room))];
+            let filterSelect = document.getElementById('leaderboard-filter');
+            let currentFilter = filterSelect.value;
+            filterSelect.innerHTML = `<option value="ALL">Overall App</option>` + rooms.map(r => `<option value="${r}">${r}</option>`).join('');
+            filterSelect.value = rooms.includes(currentFilter) ? currentFilter : 'ALL';
+
+            document.getElementById('students-crud-list').innerHTML = students.map(s => `
+                <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
+                    <div>
+                        <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
+                        <span class="text-2xs text-slate-400">${s.room} • ID: ${s.id} • ${s.points} pts</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick="editStudentAdmin('${s.id}')" class="bg-amber-100 text-amber-800 text-2xs px-2 py-1 rounded-lg font-bold">Edit</button>
+                        <button onclick="deleteStudentAdmin('${s.id}')" class="bg-rose-100 text-rose-800 text-2xs px-2 py-1 rounded-lg font-bold">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('qr-gen-student-select').innerHTML = students.map(s => 
+                `<option value="${s.id}">${s.name} (@${s.username || 'user'}) - ID: ${s.id}</option>`
+            ).join('');
+
+            renderLeaderboard();
+        }
+    </script>
+</body>
+</html>
+
