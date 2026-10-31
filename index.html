@@ -22,3 +22,747 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col pb-20">
+    <!-- ========================================== -->
+    <!-- SECTION 2: HEADER & NAVIGATION INTERFACE   -->
+    <!-- ========================================== -->
+    <header class="bg-emerald-600 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-bold">🌱 EcoSort AI</h1>
+            <p class="text-xs text-emerald-100 flex items-center gap-1">
+                <span id="sync-status" class="inline-block w-2 h-2 rounded-full bg-amber-400"></span> Live Cloud Sync
+            </p>
+        </div>
+        <button onclick="requestAdminAccess()" id="role-btn" class="text-xs bg-emerald-800 border border-emerald-400 px-3 py-1.5 rounded-full font-semibold hover:bg-emerald-700">
+            Role: Student
+        </button>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4">
+
+        <!-- STUDENT PROFILE BANNER -->
+        <section id="student-banner" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md">
+            <div id="student-logged-out" class="flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-sm">Student Session Inactive</h3>
+                    <p class="text-xs text-emerald-100">Scan QR Code to Log In</p>
+                </div>
+                <button onclick="openQRLoginModal()" class="bg-white text-emerald-800 text-xs font-bold px-3 py-2 rounded-xl shadow hover:bg-emerald-50">
+                    📷 Scan ID QR
+                </button>
+            </div>
+            
+            <div id="student-logged-in" class="hidden space-y-3">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <h3 id="profile-name" class="text-lg font-bold">---</h3>
+                            <span id="profile-username" class="text-2xs bg-emerald-700/60 text-emerald-100 px-2 py-0.5 rounded-full">@---</span>
+                        </div>
+                        <p id="profile-room" class="text-xs text-emerald-100">---</p>
+                        <p id="profile-id" class="text-2xs text-emerald-200">---</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="profile-points" class="text-2xl font-black">0</span>
+                        <span class="block text-xs text-emerald-100">Eco-Points</span>
+                    </div>
+                </div>
+                <div class="flex gap-2 pt-1 border-t border-emerald-400/30">
+                    <button onclick="openSelfEditModal()" class="text-2xs bg-emerald-700 hover:bg-emerald-800 px-2.5 py-1 rounded-lg">✏️ Edit Profile</button>
+                    <button onclick="studentLogout()" class="text-2xs bg-rose-700 hover:bg-rose-800 px-2.5 py-1 rounded-lg">Logout</button>
+                </div>
+            </div>
+        </section>
+        <!-- ========================================== -->
+        <!-- SECTION 3: TAB 1 - AI SCANNER & DISPOSAL   -->
+        <!-- ========================================== -->
+        <section id="tab-scan" class="space-y-4">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Disposal Setup</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl">
+                        <span class="block text-2xs text-slate-400 font-bold uppercase">Active User</span>
+                        <span id="active-user-text" class="text-xs font-semibold text-slate-700 truncate block">Not Logged In</span>
+                    </div>
+                    <button onclick="selectBin()" class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-left hover:bg-slate-100">
+                        <span class="block text-2xs text-slate-400 font-bold uppercase">Target Bin</span>
+                        <span id="active-bin-text" class="text-xs font-semibold text-slate-700 truncate block">Select Bin</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 text-sm">AI Waste Scanner</h3>
+                    <span id="ai-status" class="text-2xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">AI Offline</span>
+                </div>
+
+                <div class="relative bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                    <div id="camera-prompt" class="text-center p-4 space-y-2 z-10">
+                        <p class="text-xs text-slate-300">Camera access needed for object detection.</p>
+                        <button onclick="requestCameraPermission()" class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-emerald-700">
+                            📷 Enable Camera
+                        </button>
+                    </div>
+                </div>
+
+                <div id="detection-result" class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center">
+                    <div>
+                        <span class="text-2xs text-slate-400 block font-bold uppercase">AI Prediction</span>
+                        <span id="predicted-item" class="text-xs font-bold text-slate-700">No object detected</span>
+                    </div>
+                    <button onclick="logAIDisposal()" id="log-btn" disabled class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl opacity-50 cursor-not-allowed hover:bg-emerald-700">
+                        Log Waste
+                    </button>
+                </div>
+            </div>
+        </section>
+        <!-- ========================================== -->
+        <!-- SECTION 4: TAB 2 - LEADERBOARD & STATS     -->
+        <!-- ========================================== -->
+        <section id="tab-stats" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 text-sm">🏆 Leaderboard</h3>
+                    <select id="leaderboard-filter" onchange="renderLeaderboard()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none">
+                        <option value="ALL">Overall App</option>
+                    </select>
+                </div>
+                <div id="leaderboard-list" class="space-y-2 text-xs"></div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Classroom Statistics</h3>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
+                        <span id="stat-total" class="block text-2xl font-black text-emerald-600">0</span>
+                        <span class="text-xs font-medium text-emerald-800">Total Items Sorted</span>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <span id="stat-accuracy" class="block text-2xl font-black text-blue-600">0%</span>
+                        <span class="text-xs font-medium text-blue-800">Proper Sorting Rate</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Bin Accuracy Breakdown</h3>
+                <div id="bin-stats-list" class="space-y-2 text-xs"></div>
+            </div>
+        </section>       
+        <!-- ========================================== -->
+        <!-- SECTION 5: TAB 3 - ADMIN CONTROL PANEL     -->
+        <!-- ========================================== -->
+        <section id="tab-admin" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Admin Controls & Tools</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="changeAdminPasscode()" class="bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold py-2 rounded-xl hover:bg-slate-200">
+                        🔑 Passcode
+                    </button>
+                    <button onclick="exportCSVData()" class="bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-semibold py-2 rounded-xl hover:bg-emerald-200">
+                        📊 Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Manage Students</h3>
+                <form id="admin-student-form" onsubmit="handleAdminStudentSave(event)" class="space-y-2">
+                    <input type="text" id="admin-student-custom-id" placeholder="ID Number (e.g. 1 or 251-02131)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="text" id="admin-student-username" placeholder="Custom Username (e.g. eco_jude)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="text" id="admin-student-name" placeholder="Student Full Name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="text" id="admin-student-room" placeholder="Room / Section (e.g. Grade 11 Heisenberg)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <input type="number" id="admin-student-points" placeholder="Points" value="0" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                    <div class="flex gap-2">
+                        <button type="submit" id="admin-student-submit-btn" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl hover:bg-emerald-700">Add Student</button>
+                        <button type="button" onclick="resetAdminStudentForm()" class="bg-slate-200 text-slate-600 text-xs font-bold px-3 py-2 rounded-xl">Clear</button>
+                    </div>
+                </form>
+
+                <div id="students-crud-list" class="space-y-2 max-h-56 overflow-y-auto text-xs pt-2"></div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">QR Code Generator</h3>
+                <div class="space-y-2">
+                    <select id="qr-gen-type" onchange="toggleQRGenInputs()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white">
+                        <option value="student">Student ID QR</option>
+                        <option value="bin">Bin Marker QR</option>
+                    </select>
+                    
+                    <div id="qr-student-select-wrap">
+                        <select id="qr-gen-student-select" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white"></select>
+                    </div>
+
+                    <div id="qr-bin-select-wrap" class="hidden">
+                        <select id="qr-gen-bin-select" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white">
+                            <option value="BIN_BIODEGRADABLE">Biodegradable Bin Marker</option>
+                            <option value="BIN_RECYCLABLE">Recyclable Bin Marker</option>
+                            <option value="BIN_RESIDUAL">Residual Bin Marker</option>
+                        </select>
+                    </div>
+
+                    <button onclick="generateQRCode()" class="w-full bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-slate-900">Generate QR Code</button>
+                </div>
+
+                <div id="qr-output-card" class="hidden border border-slate-200 rounded-xl p-4 text-center space-y-3 bg-slate-50">
+                    <div id="qrcode-canvas" class="flex justify-center"></div>
+                    <p id="qr-output-label" class="text-xs font-semibold text-slate-600"></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bg-white border-t border-slate-200 fixed bottom-0 left-0 right-0 z-50">
+        <div class="max-w-md mx-auto grid grid-cols-3 py-2 text-center text-xs">
+            <button onclick="switchTab('scan')" id="nav-scan" class="text-emerald-600 font-bold space-y-0.5">
+                <span class="block text-base">📷</span> AI Sort
+            </button>
+            <button onclick="switchTab('stats')" id="nav-stats" class="text-slate-400 font-semibold space-y-0.5">
+                <span class="block text-base">📊</span> Analytics
+            </button>
+            <button onclick="switchTab('admin')" id="nav-admin" class="text-slate-400 font-semibold space-y-0.5 hidden">
+                <span class="block text-base">⚙️</span> Admin
+            </button>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- SECTION 6: MODALS (QR LOGIN & PROFILE EDIT)-->
+    <!-- ========================================== -->
+    <div id="modal-qr-login" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 space-y-3">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-700 text-sm">Scan Student QR Code</h3>
+                <button onclick="closeQRLoginModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+            </div>
+            <div id="qr-reader" class="rounded-xl overflow-hidden border border-slate-200"></div>
+            <p class="text-2xs text-slate-400 text-center">Point your camera at a Student ID QR Code to log in.</p>
+        </div>
+    </div>
+
+    <div id="modal-self-edit" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 space-y-3">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-slate-700 text-sm">Edit Profile Information</h3>
+                <button onclick="closeSelfEditModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+            </div>
+            <form onsubmit="handleSelfEditSave(event)" class="space-y-3">
+                <div>
+                    <label class="text-2xs text-slate-400 font-bold uppercase">Custom Username</label>
+                    <input type="text" id="self-edit-username" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <div>
+                    <label class="text-2xs text-slate-400 font-bold uppercase">Full Name</label>
+                    <input type="text" id="self-edit-name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <div>
+                    <label class="text-2xs text-slate-400 font-bold uppercase">Room / Section</label>
+                    <input type="text" id="self-edit-room" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-emerald-700">Save Changes</button>
+            </form>
+        </div>
+    </div>
+    <!-- ========================================== -->
+    <!-- SECTION 7: CORE JAVASCRIPT & LOGIC ENGINE  -->
+    <!-- ========================================== -->
+    <script>
+        // Firebase Configuration (Replace with your own database keys)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const dbRef = firebase.database().ref('ecosort_system');
+
+        let db = {
+            adminPasscode: "1234",
+            students: [],
+            disposals: []
+        };
+
+        let currentRole = "student";
+        let activeStudent = null;
+        let activeBin = null;
+        let detectedItemLabel = "";
+        let cocoModel = null;
+        let html5QrScanner = null;
+
+        const ITEM_BIN_RULES = {
+            "bottle": "Recyclable",
+            "cup": "Recyclable",
+            "cell phone": "Recyclable",
+            "book": "Recyclable",
+            "apple": "Biodegradable",
+            "banana": "Biodegradable",
+            "sandwich": "Biodegradable"
+        };
+
+        // Customizable Audio & Music Feedback Configuration
+        const CUSTOM_AUDIO = {
+            successSoundUrl: "https://actions.google.com/sounds/v1/cartoon/clink_clink.ogg",
+            errorSoundUrl: "https://actions.google.com/sounds/v1/cartoon/boing_boing.ogg"
+        };
+
+        const successAudio = new Audio(CUSTOM_AUDIO.successSoundUrl);
+        const errorAudio = new Audio(CUSTOM_AUDIO.errorSoundUrl);
+
+        function playFeedbackSound(isSuccess) {
+            if (navigator.vibrate) {
+                navigator.vibrate(isSuccess ? [100, 50, 100] : [300]);
+            }
+            try {
+                if (isSuccess) {
+                    successAudio.currentTime = 0;
+                    successAudio.play().catch(e => console.log("Audio playback blocked:", e));
+                } else {
+                    errorAudio.currentTime = 0;
+                    errorAudio.play().catch(e => console.log("Audio playback blocked:", e));
+                }
+            } catch (e) {
+                console.log("Audio error:", e);
+            }
+        }
+
+        // CSV Data Exporter for Research Analysis
+        function exportCSVData() {
+            let disposals = db.disposals || [];
+            if (disposals.length === 0) {
+                alert("No disposal records to export.");
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,Student ID,Student Name,Username,Bin,Item,Properly Sorted,Timestamp\n";
+            disposals.forEach(d => {
+                csvContent += `"${d.studentId}","${d.studentName}","${d.username || 'user'}","${d.bin}","${d.item}","${d.isProper ? 'YES' : 'NO'}","${d.timestamp}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `ecosort_data_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Real-Time Cloud Listener
+        dbRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                db = data;
+                if (!db.students) db.students = [];
+                if (!db.disposals) db.disposals = [];
+                
+                if (activeStudent) {
+                    let updated = db.students.find(s => s.id === activeStudent.id);
+                    if (updated) activeStudent = updated;
+                }
+                
+                document.getElementById('sync-status').className = "inline-block w-2 h-2 rounded-full bg-emerald-400";
+            } else {
+                saveDB();
+            }
+            updateUI();
+        });
+
+        function saveDB() {
+            dbRef.set(db);
+        }
+
+        function requestAdminAccess() {
+            if (currentRole === "admin") {
+                currentRole = "student";
+                document.getElementById('role-btn').innerText = "Role: Student";
+                document.getElementById('nav-admin').classList.add('hidden');
+                switchTab('scan');
+                return;
+            }
+
+            let inputPin = prompt("Enter Admin Passcode:");
+            if (inputPin === db.adminPasscode) {
+                currentRole = "admin";
+                document.getElementById('role-btn').innerText = "Role: Admin";
+                document.getElementById('nav-admin').classList.remove('hidden');
+                switchTab('admin');
+            } else if (inputPin !== null) {
+                alert("Incorrect passcode!");
+            }
+        }
+
+        function changeAdminPasscode() {
+            let current = prompt("Enter current admin passcode:");
+            if (current === db.adminPasscode) {
+                let newPass = prompt("Enter new passcode:");
+                if (newPass && newPass.trim().length > 0) {
+                    db.adminPasscode = newPass.trim();
+                    saveDB();
+                    alert("Admin passcode updated across all devices!");
+                }
+            } else if (current !== null) {
+                alert("Incorrect current passcode.");
+            }
+        }
+
+        function openQRLoginModal() {
+            document.getElementById('modal-qr-login').classList.remove('hidden');
+            html5QrScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 200 });
+            html5QrScanner.render(onScanSuccess);
+        }
+
+        function closeQRLoginModal() {
+            if (html5QrScanner) html5QrScanner.clear();
+            document.getElementById('modal-qr-login').classList.add('hidden');
+        }
+
+        function onScanSuccess(decodedText) {
+            closeQRLoginModal();
+            let student = db.students.find(s => s.id === decodedText.trim());
+            if (student) {
+                activeStudent = student;
+                alert(`Welcome back, ${student.name} (@${student.username})!`);
+                updateUI();
+            } else {
+                alert(`Unrecognized Student ID QR Code: ${decodedText}`);
+            }
+        }
+
+        function studentLogout() {
+            activeStudent = null;
+            updateUI();
+        }
+
+        function openSelfEditModal() {
+            if (!activeStudent) return;
+            document.getElementById('self-edit-username').value = activeStudent.username || "";
+            document.getElementById('self-edit-name').value = activeStudent.name;
+            document.getElementById('self-edit-room').value = activeStudent.room;
+            document.getElementById('modal-self-edit').classList.remove('hidden');
+        }
+
+        function closeSelfEditModal() {
+            document.getElementById('modal-self-edit').classList.add('hidden');
+        }
+
+        function handleSelfEditSave(e) {
+            e.preventDefault();
+            if (!activeStudent) return;
+            activeStudent.username = document.getElementById('self-edit-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+            activeStudent.name = document.getElementById('self-edit-name').value.trim();
+            activeStudent.room = document.getElementById('self-edit-room').value.trim();
+            saveDB();
+            closeSelfEditModal();
+        }
+
+        function handleAdminStudentSave(e) {
+            e.preventDefault();
+            let customId = document.getElementById('admin-student-custom-id').value.trim();
+            let username = document.getElementById('admin-student-username').value.trim().toLowerCase().replace(/\s+/g, '_');
+            let name = document.getElementById('admin-student-name').value.trim();
+            let room = document.getElementById('admin-student-room').value.trim();
+            let points = parseInt(document.getElementById('admin-student-points').value) || 0;
+
+            let existingIndex = db.students.findIndex(s => s.id === customId);
+            if (existingIndex >= 0) {
+                db.students[existingIndex].username = username;
+                db.students[existingIndex].name = name;
+                db.students[existingIndex].room = room;
+                db.students[existingIndex].points = points;
+            } else {
+                db.students.push({ id: customId, username, name, room, points });
+            }
+
+            resetAdminStudentForm();
+            saveDB();
+        }
+
+        function editStudentAdmin(id) {
+            let student = db.students.find(s => s.id === id);
+            if (student) {
+                let idField = document.getElementById('admin-student-custom-id');
+                idField.value = student.id;
+                idField.disabled = true;
+                document.getElementById('admin-student-username').value = student.username || "";
+                document.getElementById('admin-student-name').value = student.name;
+                document.getElementById('admin-student-room').value = student.room;
+                document.getElementById('admin-student-points').value = student.points;
+                document.getElementById('admin-student-submit-btn').innerText = "Update Student";
+            }
+        }
+
+        function deleteStudentAdmin(id) {
+            if (confirm("Are you sure you want to delete this student record?")) {
+                db.students = db.students.filter(s => s.id !== id);
+                if (activeStudent && activeStudent.id === id) activeStudent = null;
+                saveDB();
+            }
+        }
+
+        function resetAdminStudentForm() {
+            document.getElementById('admin-student-form').reset();
+            let idField = document.getElementById('admin-student-custom-id');
+            idField.disabled = false;
+            document.getElementById('admin-student-submit-btn').innerText = "Add Student";
+        }
+
+        function toggleQRGenInputs() {
+            let type = document.getElementById('qr-gen-type').value;
+            document.getElementById('qr-student-select-wrap').classList.toggle('hidden', type !== 'student');
+            document.getElementById('qr-bin-select-wrap').classList.toggle('hidden', type !== 'bin');
+        }
+
+        function generateQRCode() {
+            let type = document.getElementById('qr-gen-type').value;
+            let textToEncode = "";
+            let label = "";
+
+            if (type === 'student') {
+                textToEncode = document.getElementById('qr-gen-student-select').value;
+                let s = db.students.find(x => x.id === textToEncode);
+                label = s ? `${s.name} (@${s.username || 'user'})` : textToEncode;
+            } else {
+                textToEncode = document.getElementById('qr-gen-bin-select').value;
+                label = textToEncode.replace('_', ' ');
+            }
+
+            if (!textToEncode) return;
+
+            let canvasContainer = document.getElementById('qrcode-canvas');
+            canvasContainer.innerHTML = "";
+            
+            new QRCode(canvasContainer, {
+                text: textToEncode,
+                width: 160,
+                height: 160
+            });
+
+            document.getElementById('qr-output-label').innerText = label;
+            document.getElementById('qr-output-card').classList.remove('hidden');
+        }
+
+        async function requestCameraPermission() {
+            const video = document.getElementById('webcam');
+            const prompt = document.getElementById('camera-prompt');
+            const statusBadge = document.getElementById('ai-status');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                prompt.classList.add('hidden');
+                
+                statusBadge.innerText = "Loading AI...";
+                statusBadge.className = "text-2xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold";
+
+                cocoModel = await cocoSsd.load();
+                statusBadge.innerText = "AI Live";
+                statusBadge.className = "text-2xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold";
+                
+                detectFrame();
+            } catch (err) {
+                alert("Camera access denied.");
+            }
+        }
+
+        async function detectFrame() {
+            const video = document.getElementById('webcam');
+            if (cocoModel && video.readyState === 4) {
+                const predictions = await cocoModel.detect(video);
+                if (predictions.length > 0) {
+                    detectedItemLabel = predictions[0].class;
+                    document.getElementById('predicted-item').innerText = detectedItemLabel.toUpperCase();
+                    checkLogEligibility();
+                } else {
+                    detectedItemLabel = "";
+                    document.getElementById('predicted-item').innerText = "Scanning...";
+                    disableLogButton();
+                }
+            }
+            requestAnimationFrame(detectFrame);
+        }
+
+        function checkLogEligibility() {
+            const logBtn = document.getElementById('log-btn');
+            if (activeStudent && activeBin && detectedItemLabel) {
+                logBtn.disabled = false;
+                logBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function disableLogButton() {
+            const logBtn = document.getElementById('log-btn');
+            logBtn.disabled = true;
+            logBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        function selectBin() {
+            let choice = prompt("Select Target Bin:\n1. Biodegradable\n2. Recyclable\n3. Residual");
+            if (choice === "1") activeBin = "Biodegradable";
+            else if (choice === "2") activeBin = "Recyclable";
+            else if (choice === "3") activeBin = "Residual";
+            
+            if (activeBin) {
+                document.getElementById('active-bin-text').innerText = activeBin;
+                checkLogEligibility();
+            }
+        }
+
+        function logAIDisposal() {
+            if (!activeStudent || !activeBin || !detectedItemLabel) return;
+
+            let expectedBin = ITEM_BIN_RULES[detectedItemLabel] || "Residual";
+            let isProper = (activeBin === expectedBin);
+            let pointsEarned = isProper ? 10 : 0;
+
+            if (!db.disposals) db.disposals = [];
+
+            db.disposals.push({
+                studentId: activeStudent.id,
+                studentName: activeStudent.name,
+                username: activeStudent.username || "user",
+                bin: activeBin,
+                item: detectedItemLabel,
+                isProper: isProper,
+                timestamp: new Date().toLocaleTimeString()
+            });
+
+            playFeedbackSound(isProper);
+
+            if (isProper) {
+                activeStudent.points += pointsEarned;
+                alert(`🎉 SUCCESS! '${detectedItemLabel}' placed in ${activeBin} Bin. +10 Eco-Points!`);
+            } else {
+                alert(`❌ MIS-SORTED! '${detectedItemLabel}' belongs in ${expectedBin} Bin.`);
+            }
+
+            saveDB();
+        }
+
+        function switchTab(tab) {
+            ['scan', 'stats', 'admin'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "text-slate-400 font-semibold space-y-0.5";
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).className = "text-emerald-600 font-bold space-y-0.5";
+            if (tab === 'stats') {
+                renderLeaderboard();
+                renderStats();
+            }
+        }
+
+        function renderLeaderboard() {
+            let filter = document.getElementById('leaderboard-filter').value;
+            let students = [...(db.students || [])];
+
+            if (filter !== 'ALL') {
+                students = students.filter(s => s.room === filter);
+            }
+
+            students.sort((a, b) => b.points - a.points);
+
+            if (students.length === 0) {
+                document.getElementById('leaderboard-list').innerHTML = `<p class="text-slate-400 text-center py-2">No students registered yet.</p>`;
+                return;
+            }
+
+            document.getElementById('leaderboard-list').innerHTML = students.slice(0, 5).map((s, idx) => `
+                <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 text-center font-bold text-slate-400">${idx + 1}.</span>
+                        <div>
+                            <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
+                            <span class="text-2xs text-slate-400">${s.room}</span>
+                        </div>
+                    </div>
+                    <span class="font-black text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-lg">${s.points} pts</span>
+                </div>
+            `).join('');
+        }
+
+        function renderStats() {
+            let disposals = db.disposals || [];
+            let total = disposals.length;
+            document.getElementById('stat-total').innerText = total;
+
+            if (total === 0) {
+                document.getElementById('stat-accuracy').innerText = "0%";
+                document.getElementById('bin-stats-list').innerHTML = `<p class="text-slate-400 text-center py-2">No records logged yet.</p>`;
+                return;
+            }
+
+            let proper = disposals.filter(d => d.isProper).length;
+            document.getElementById('stat-accuracy').innerText = Math.round((proper / total) * 100) + "%";
+
+            let bins = ["Biodegradable", "Recyclable", "Residual"];
+            document.getElementById('bin-stats-list').innerHTML = bins.map(b => {
+                let items = disposals.filter(d => d.bin === b);
+                let correct = items.filter(d => d.isProper).length;
+                let rate = items.length > 0 ? Math.round((correct / items.length) * 100) : 0;
+                return `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <span class="font-semibold text-slate-700">${b} Bin</span>
+                        <span class="font-bold text-emerald-600">${rate}% Proper (${items.length} items)</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateUI() {
+            const loggedOutView = document.getElementById('student-logged-out');
+            const loggedInView = document.getElementById('student-logged-in');
+
+            if (activeStudent) {
+                loggedOutView.classList.add('hidden');
+                loggedInView.classList.remove('hidden');
+                document.getElementById('profile-name').innerText = activeStudent.name;
+                document.getElementById('profile-username').innerText = `@${activeStudent.username || 'user'}`;
+                document.getElementById('profile-room').innerText = activeStudent.room;
+                document.getElementById('profile-id').innerText = `ID Number: ${activeStudent.id}`;
+                document.getElementById('profile-points').innerText = activeStudent.points;
+                document.getElementById('active-user-text').innerText = `${activeStudent.name} (@${activeStudent.username || 'user'})`;
+            } else {
+                loggedOutView.classList.remove('hidden');
+                loggedInView.classList.add('hidden');
+                document.getElementById('active-user-text').innerText = "Not Logged In";
+            }
+
+            let students = db.students || [];
+
+            let rooms = [...new Set(students.map(s => s.room))];
+            let filterSelect = document.getElementById('leaderboard-filter');
+            let currentFilter = filterSelect.value;
+            filterSelect.innerHTML = `<option value="ALL">Overall App</option>` + rooms.map(r => `<option value="${r}">${r}</option>`).join('');
+            filterSelect.value = rooms.includes(currentFilter) ? currentFilter : 'ALL';
+
+            document.getElementById('students-crud-list').innerHTML = students.map(s => `
+                <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200">
+                    <div>
+                        <span class="font-bold text-slate-700 block">${s.name} <span class="text-slate-400 font-normal">(@${s.username || 'user'})</span></span>
+                        <span class="text-2xs text-slate-400">${s.room} • ID: ${s.id} • ${s.points} pts</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick="editStudentAdmin('${s.id}')" class="bg-amber-100 text-amber-800 text-2xs px-2 py-1 rounded-lg font-bold">Edit</button>
+                        <button onclick="deleteStudentAdmin('${s.id}')" class="bg-rose-100 text-rose-800 text-2xs px-2 py-1 rounded-lg font-bold">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('qr-gen-student-select').innerHTML = students.map(s => 
+                `<option value="${s.id}">${s.name} (@${s.username || 'user'}) - ID: ${s.id}</option>`
+            ).join('');
+
+            renderLeaderboard();
+        }
+    </script>
+</body>
+</html>
