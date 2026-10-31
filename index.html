@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSort AI Mobile</title>
+    <!-- Tailwind CSS for mobile UI -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- TensorFlow.js and COCO-SSD for client-side object detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col pb-20">
+
+    <!-- Header -->
+    <header class="bg-emerald-600 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-bold">🌱 EcoSort AI Mobile</h1>
+            <p class="text-xs text-emerald-100">AI Computer Vision Waste System</p>
+        </div>
+        <button onclick="toggleRole()" id="role-btn" class="text-xs bg-emerald-800 border border-emerald-400 px-3 py-1.5 rounded-full font-semibold hover:bg-emerald-700">
+            Role: Admin
+        </button>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4">
+
+        <!-- STUDENT DASHBOARD (Shown in Student Mode) -->
+        <section id="student-dashboard" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-2xl shadow-md hidden">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-100">Logged-In Student</h2>
+            <div class="flex justify-between items-center mt-1">
+                <div>
+                    <h3 id="student-name-display" class="text-lg font-bold">Jude Louise Loria</h3>
+                    <p id="student-room-display" class="text-xs text-emerald-100">Grade 11 Heisenberg</p>
+                </div>
+                <div class="text-right">
+                    <span id="student-points-display" class="text-2xl font-black">0</span>
+                    <span class="block text-xs text-emerald-100">Eco-Points</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 1: AI SCANNER & DISPOSAL -->
+        <section id="tab-scan" class="space-y-4">
+            <!-- Session Setup Card -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Step 1: Session Setup</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="selectStudent()" class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-left hover:bg-slate-100">
+                        <span class="block text-xs text-slate-400 font-bold uppercase">User ID</span>
+                        <span id="active-user-text" class="text-sm font-semibold text-slate-700 truncate block">Select Student</span>
+                    </button>
+                    <button onclick="selectBin()" class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-left hover:bg-slate-100">
+                        <span class="block text-xs text-slate-400 font-bold uppercase">Target Bin</span>
+                        <span id="active-bin-text" class="text-sm font-semibold text-slate-700 truncate block">Select Bin</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Camera Detection Card -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 text-sm">Step 2: AI Waste Scanner</h3>
+                    <span id="ai-status" class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">AI Offline</span>
+                </div>
+
+                <!-- Camera Stream Container -->
+                <div class="relative bg-black rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                    <canvas id="canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                    
+                    <!-- Camera Placeholder / Permission Request Overlay -->
+                    <div id="camera-prompt" class="text-center p-4 space-y-2 z-10">
+                        <p class="text-xs text-slate-300">Camera access is needed to scan waste items using AI.</p>
+                        <button onclick="requestCameraPermission()" class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-emerald-700">
+                            📷 Enable Camera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Detected Item Display -->
+                <div id="detection-result" class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center">
+                    <div>
+                        <span class="text-xs text-slate-400 block font-bold uppercase">AI Prediction</span>
+                        <span id="predicted-item" class="text-sm font-bold text-slate-700">No object detected</span>
+                    </div>
+                    <button onclick="logAIDisposal()" id="log-btn" disabled class="bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl opacity-50 cursor-not-allowed hover:bg-emerald-700">
+                        Log Waste
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ANALYTICS (Admin & User) -->
+        <section id="tab-stats" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Classroom Waste Statistics</h3>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
+                        <span id="stat-total" class="block text-2xl font-black text-emerald-600">0</span>
+                        <span class="text-xs font-medium text-emerald-800">Total Items Sorted</span>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <span id="stat-accuracy" class="block text-2xl font-black text-blue-600">0%</span>
+                        <span class="text-xs font-medium text-blue-800">Proper Sorting Rate</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Bin Accuracy Ratios</h3>
+                <div id="bin-stats-list" class="space-y-2 text-xs">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: ROOMS & ADMIN (Admin Only) -->
+        <section id="tab-rooms" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Register Student / User</h3>
+                <input type="text" id="new-student-name" placeholder="Student Full Name" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500">
+                <select id="new-student-room" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:border-emerald-500">
+                    <option value="Grade 11 Heisenberg">Grade 11 Heisenberg</option>
+                    <option value="Grade 12 STEM-A">Grade 12 STEM-A</option>
+                </select>
+                <button onclick="addStudent()" class="w-full bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl hover:bg-slate-900">
+                    Register Student
+                </button>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-slate-700 text-sm">Registered Students Ledger</h3>
+                <div id="students-ledger" class="space-y-2 max-h-48 overflow-y-auto text-xs">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white border-t border-slate-200 fixed bottom-0 left-0 right-0 z-50">
+        <div class="max-w-md mx-auto grid grid-cols-3 py-2 text-center text-xs">
+            <button onclick="switchTab('scan')" id="nav-scan" class="text-emerald-600 font-bold space-y-0.5">
+                <span class="block text-base">📷</span> AI Sort
+            </button>
+            <button onclick="switchTab('stats')" id="nav-stats" class="text-slate-400 font-semibold space-y-0.5">
+                <span class="block text-base">📊</span> Analytics
+            </button>
+            <button onclick="switchTab('rooms')" id="nav-rooms" class="text-slate-400 font-semibold space-y-0.5">
+                <span class="block text-base">🏫</span> Admin
+            </button>
+        </div>
+    </nav>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Database State
+        let db = JSON.parse(localStorage.getItem('ecosort_ai_db')) || {
+            students: [
+                { id: "S001", name: "Jude Louise Loria", room: "Grade 11 Heisenberg", points: 40 },
+                { id: "S002", name: "Maria Santos", room: "Grade 11 Heisenberg", points: 25 }
+            ],
+            disposals: []
+        };
+
+        let currentRole = "admin"; // "admin" or "student"
+        let activeStudent = db.students[0];
+        let activeBin = null;
+        let detectedItemLabel = "";
+        let cocoModel = null;
+
+        // Rule Map: Maps COCO-SSD object classes to school bin types
+        const ITEM_BIN_RULES = {
+            "bottle": "Recyclable",
+            "cup": "Recyclable",
+            "cell phone": "Recyclable",
+            "book": "Recyclable",
+            "apple": "Biodegradable",
+            "banana": "Biodegradable",
+            "sandwich": "Biodegradable"
+        };
+
+        function saveDB() {
+            localStorage.setItem('ecosort_ai_db', JSON.stringify(db));
+            updateUI();
+        }
+
+        // Camera Permission Request
+        async function requestCameraPermission() {
+            const video = document.getElementById('webcam');
+            const prompt = document.getElementById('camera-prompt');
+            const statusBadge = document.getElementById('ai-status');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" } 
+                });
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                prompt.classList.add('hidden');
+                
+                statusBadge.innerText = "Loading AI Model...";
+                statusBadge.className = "text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold";
+
+                // Load COCO-SSD Model (Mobile-friendly YOLO alternative)
+                cocoModel = await cocoSsd.load();
+                statusBadge.innerText = "AI Live";
+                statusBadge.className = "text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold";
+                
+                detectFrame();
+            } catch (err) {
+                alert("Camera Permission Denied: Please allow camera access in your browser settings to run object detection.");
+                console.error(err);
+            }
+        }
+
+        // Continuous Object Detection Loop
+        async function detectFrame() {
+            const video = document.getElementById('webcam');
+            if (cocoModel && video.readyState === 4) {
+                const predictions = await cocoModel.detect(video);
+                
+                if (predictions.length > 0) {
+                    detectedItemLabel = predictions[0].class;
+                    document.getElementById('predicted-item').innerText = detectedItemLabel.toUpperCase();
+                    checkLogEligibility();
+                } else {
+                    detectedItemLabel = "";
+                    document.getElementById('predicted-item').innerText = "Scanning...";
+                    disableLogButton();
+                }
+            }
+            requestAnimationFrame(detectFrame);
+        }
+
+        function checkLogEligibility() {
+            const logBtn = document.getElementById('log-btn');
+            if (activeStudent && activeBin && detectedItemLabel) {
+                logBtn.disabled = false;
+                logBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function disableLogButton() {
+            const logBtn = document.getElementById('log-btn');
+            logBtn.disabled = true;
+            logBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        // Session Setup Handlers
+        function selectStudent() {
+            let list = db.students.map((s, i) => `${i+1}. ${s.name} (${s.room})`).join('\n');
+            let choice = prompt("Select Student:\n" + list);
+            let idx = parseInt(choice) - 1;
+            if (!isNaN(idx) && db.students[idx]) {
+                activeStudent = db.students[idx];
+                document.getElementById('active-user-text').innerText = activeStudent.name;
+                checkLogEligibility();
+            }
+        }
+
+        function selectBin() {
+            let choice = prompt("Select Bin Type:\n1. Biodegradable\n2. Recyclable\n3. Residual");
+            if (choice === "1") activeBin = "Biodegradable";
+            else if (choice === "2") activeBin = "Recyclable";
+            else if (choice === "3") activeBin = "Residual";
+            
+            if (activeBin) {
+                document.getElementById('active-bin-text').innerText = activeBin;
+                checkLogEligibility();
+            }
+        }
+
+        // Log AI Disposal Transaction
+        function logAIDisposal() {
+            if (!activeStudent || !activeBin || !detectedItemLabel) return;
+
+            let expectedBin = ITEM_BIN_RULES[detectedItemLabel] || "Residual";
+            let isProper = (activeBin === expectedBin);
+            let pointsEarned = isProper ? 10 : 0;
+
+            db.disposals.push({
+                studentId: activeStudent.id,
+                studentName: activeStudent.name,
+                bin: activeBin,
+                item: detectedItemLabel,
+                isProper: isProper,
+                timestamp: new Date().toLocaleTimeString()
+            });
+
+            if (isProper) {
+                let student = db.students.find(s => s.id === activeStudent.id);
+                if (student) student.points += pointsEarned;
+                alert(`🎉 SUCCESS! Item '${detectedItemLabel}' properly placed in ${activeBin} Bin. +10 Eco-Points!`);
+            } else {
+                alert(`❌ MIS-SORTED! '${detectedItemLabel}' belongs in the ${expectedBin} Bin, not ${activeBin}. 0 points awarded.`);
+            }
+
+            saveDB();
+        }
+
+        // Role & Tab Navigation
+        function toggleRole() {
+            currentRole = (currentRole === "admin") ? "student" : "admin";
+            document.getElementById('role-btn').innerText = `Role: ${currentRole === "admin" ? "Admin" : "Student"}`;
+            
+            const dash = document.getElementById('student-dashboard');
+            const adminNav = document.getElementById('nav-rooms');
+
+            if (currentRole === "student") {
+                dash.classList.remove('hidden');
+                adminNav.classList.add('hidden');
+            } else {
+                dash.classList.add('hidden');
+                adminNav.classList.remove('hidden');
+            }
+        }
+
+        function switchTab(tab) {
+            ['scan', 'stats', 'rooms'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "text-slate-400 font-semibold space-y-0.5";
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).className = "text-emerald-600 font-bold space-y-0.5";
+            if (tab === 'stats') renderStats();
+        }
+
+        // Admin Actions
+        function addStudent() {
+            let name = document.getElementById('new-student-name').value.trim();
+            let room = document.getElementById('new-student-room').value;
+            if (name && room) {
+                let id = "S0" + (db.students.length + 1);
+                db.students.push({ id, name, room, points: 0 });
+                document.getElementById('new-student-name').value = "";
+                saveDB();
+            }
+        }
+
+        function renderStats() {
+            let total = db.disposals.length;
+            document.getElementById('stat-total').innerText = total;
+
+            if (total === 0) {
+                document.getElementById('stat-accuracy').innerText = "0%";
+                document.getElementById('bin-stats-list').innerHTML = `<p class="text-slate-400 text-center py-2">No records logged yet.</p>`;
+                return;
+            }
+
+            let proper = db.disposals.filter(d => d.isProper).length;
+            document.getElementById('stat-accuracy').innerText = Math.round((proper / total) * 100) + "%";
+
+            let bins = ["Biodegradable", "Recyclable", "Residual"];
+            let listHTML = bins.map(b => {
+                let items = db.disposals.filter(d => d.bin === b);
+                let correct = items.filter(d => d.isProper).length;
+                let rate = items.length > 0 ? Math.round((correct / items.length) * 100) : 0;
+                return `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <span class="font-semibold text-slate-700">${b} Bin</span>
+                        <span class="font-bold text-emerald-600">${rate}% Proper (${items.length} items)</span>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('bin-stats-list').innerHTML = listHTML;
+        }
+
+        function updateUI() {
+            // Update Student Ledger
+            let ledgerHTML = db.students.map(s => `
+                <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div>
+                        <span class="font-semibold text-slate-700">${s.name}</span>
+                        <span class="block text-slate-400 text-2xs">${s.room}</span>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md">${s.points} pts</span>
+                </div>
+            `).join('');
+            document.getElementById('students-ledger').innerHTML = ledgerHTML;
+
+            // Update Active Student UI Displays
+            if (activeStudent) {
+                document.getElementById('student-name-display').innerText = activeStudent.name;
+                document.getElementById('student-room-display').innerText = activeStudent.room;
+                document.getElementById('student-points-display').innerText = activeStudent.points;
+            }
+        }
+
+        // Initial Setup
+        updateUI();
+    </script>
+</body>
+</html>
+  
