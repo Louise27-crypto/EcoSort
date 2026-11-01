@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#16794b" />
+  <title>EcoSort AI</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">♻</span><div><strong>EcoSort AI</strong><small>Smarter sorting, greener schools</small></div></div>
+    <div class="header-actions"><span id="connection" class="pill">Checking connection…</span><button id="adminOpen" class="btn btn-quiet">Admin</button></div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div><p class="eyebrow">SCHOOL SUSTAINABILITY PLATFORM</p><h1>Small actions.<br/><span>Lasting impact.</span></h1><p class="hero-copy">Identify waste, find the right bin, and earn eco-points for better habits.</p></div>
+      <div class="hero-stat"><span class="stat-icon">🌱</span><span class="muted">Your eco-points</span><strong id="heroPoints">0</strong><small>Every correct sort counts</small></div>
+    </section>
+
+    <section class="panel profile-panel">
+      <div class="section-heading"><div><p class="eyebrow">YOUR PROFILE</p><h2>Welcome to EcoSort</h2></div><span class="step">01 / PROFILE</span></div>
+      <div class="profile-grid">
+        <label>Username / handle<input id="username" maxlength="28" placeholder="@yourname" autocomplete="nickname"/></label>
+        <label>Role<select id="role"><option>Student</option><option>Teacher</option><option>Staff / Other</option></select></label>
+        <label>Department / room<input id="department" maxlength="60" placeholder="e.g. Grade 11 STEM A"/></label>
+        <button id="saveProfile" class="btn btn-primary">Save profile</button>
+      </div>
+      <p id="profileStatus" class="helper">Create a profile to begin recording your sorting activity.</p>
+    </section>
+
+    <section class="work-grid">
+      <section class="panel camera-panel">
+        <div class="section-heading"><div><p class="eyebrow">SMART RECOGNITION</p><h2>Identify your waste</h2></div><span class="round-icon">◎</span></div>
+        <div class="camera-stage" id="cameraStage">
+          <video id="camera" autoplay playsinline muted></video>
+          <div id="cameraPlaceholder" class="camera-placeholder"><span>📷</span><strong>Camera ready when you are</strong><small>Allow camera access to try real-time object detection.</small></div>
+          <div id="cameraLabel" class="camera-label hidden">AI model loading…</div>
+        </div>
+        <div class="button-row"><button id="startCamera" class="btn btn-primary">Start camera</button><button id="stopCamera" class="btn btn-outline" disabled>Stop</button></div>
+        <p class="helper">AI suggestions are estimates. Confirm the item before logging it. Recognition runs in your browser.</p>
+        <div class="manual-entry"><label for="wasteSelect">Or choose an item manually</label><div class="inline-controls"><select id="wasteSelect"><option value="">Select a waste item…</option><option>banana peel</option><option>food scraps</option><option>dry leaves</option><option>paper</option><option>cardboard</option><option>plastic bottle</option><option>aluminum can</option><option>glass bottle</option><option>plastic wrapper</option><option>foam container</option><option>battery</option><option>other / unlisted item</option></select><button id="useManual" class="btn btn-outline">Use item</button></div></div>
+        <div id="detectionResult" class="detection-result hidden"></div>
+      </section>
+
+      <section class="panel disposal-panel">
+        <div class="section-heading"><div><p class="eyebrow">DISPOSAL CHECK-IN</p><h2>Choose the right bin</h2></div><span class="round-icon">⌁</span></div>
+        <div class="qr-entry"><label for="userQr">User ID QR text</label><div class="inline-controls"><input id="userQr" placeholder="Scan/paste user ID or @handle"/><button id="applyUserQr" class="btn btn-outline">Apply</button></div><small>QR scanners that act as a keyboard can type here and press Apply.</small></div>
+        <div class="qr-entry"><label for="binQr">Bin marker QR text</label><div class="inline-controls"><input id="binQr" placeholder="BIN:Recyclable:Room 101"/><button id="applyBinQr" class="btn btn-outline">Apply</button></div><small>Format: <code>BIN:BinName:Room</code></small></div>
+        <div class="selected-item"><span class="selected-emoji">♻</span><div><small>Selected item</small><strong id="selectedWaste">None selected</strong><small id="selectedGroup">Select an item to continue</small></div></div>
+        <label for="binSelect">Available bin</label><select id="binSelect"><option value="">Choose a bin…</option></select>
+        <div id="binHint" class="bin-hint">Your bin's category and room will appear here.</div>
+        <button id="logDisposal" class="btn btn-primary btn-wide" disabled>Confirm disposal <span>→</span></button>
+        <p id="disposalStatus" class="helper" role="status">Select an item and bin to record a disposal.</p>
+        <div class="feedback-options"><span>🔊 Audio feedback</span><span>📳 Haptic feedback on supported devices</span></div>
+      </section>
+    </section>
+
+    <section class="stats-grid">
+      <div class="metric"><span class="metric-icon">♻</span><small>Items logged</small><strong id="totalItems">0</strong><span class="metric-note">All recorded disposals</span></div>
+      <div class="metric"><span class="metric-icon">✓</span><small>Correct sorting</small><strong id="accuracy">—</strong><span class="metric-note">Based on bin category</span></div>
+      <div class="metric"><span class="metric-icon">🌿</span><small>Eco-points earned</small><strong id="totalPoints">0</strong><span class="metric-note">Correct sorts earn points</span></div>
+    </section>
+
+    <section class="panel records-panel">
+      <div class="section-heading"><div><p class="eyebrow">YOUR IMPACT</p><h2>Recent activity</h2></div><button id="exportMine" class="btn btn-outline">Export my CSV</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Item</th><th>Bin</th><th>Room / group</th><th>Result</th><th>Points</th></tr></thead><tbody id="activityRows"><tr><td colspan="6" class="empty">No disposals recorded yet.</td></tr></tbody></table></div>
+    </section>
+
+    <footer><span>EcoSort AI · Built for greener learning spaces</span><span>Offline-first interface · Firebase sync optional</span></footer>
+  </main>
+
+  <dialog id="adminDialog" class="admin-dialog">
+    <div class="dialog-head"><div><p class="eyebrow">SYSTEM SETTINGS</p><h2>Admin console</h2></div><button id="adminClose" class="icon-button" aria-label="Close">×</button></div>
+    <div id="adminLogin">
+      <p class="helper">Enter the admin passcode to manage bins, view records, and export research data.</p>
+      <label>Admin passcode<input id="adminPass" type="password" inputmode="numeric" placeholder="Passcode"/></label>
+      <button id="adminLoginBtn" class="btn btn-primary btn-wide">Unlock admin tools</button><p id="adminLoginStatus" class="helper"></p>
+    </div>
+    <div id="adminTools" class="hidden">
+      <div class="admin-tabs"><button class="tab active" data-tab="bins">Bins</button><button class="tab" data-tab="analytics">Analytics</button><button class="tab" data-tab="users">Users</button></div>
+      <section id="tab-bins" class="admin-tab-content">
+        <h3>Manage bins</h3><div class="admin-form"><input id="newBinName" placeholder="Bin name"/><select id="newBinCategory"><option>Biodegradable</option><option>Recyclable</option><option>Residual</option><option>Hazardous</option></select><input id="newBinRoom" placeholder="Room / department"/><button id="addBin" class="btn btn-primary">Add bin</button></div>
+        <div id="adminBinList" class="admin-list"></div>
+        <h3>Printable QR marker</h3><select id="qrBinSelect"></select><div id="qrOutput" class="qr-output"></div><button id="downloadBinQr" class="btn btn-outline btn-wide">Download bin QR PNG</button>
+      </section>
+      <section id="tab-analytics" class="admin-tab-content hidden"><h3>Research analytics</h3><div class="filter-row"><label>Department / room<input id="analyticsFilter" placeholder="All departments"/></label><button id="exportAll" class="btn btn-primary">Export all CSV</button></div><div class="admin-metrics" id="adminMetrics"></div><div class="table-wrap"><table><thead><tr><th>User</th><th>Role</th><th>Department</th><th>Items</th><th>Correct</th><th>Points</th></tr></thead><tbody id="leaderboardRows"></tbody></table></div></section>
+      <section id="tab-users" class="admin-tab-content hidden"><h3>Registered profiles</h3><div id="adminUserList" class="admin-list"></div><p class="helper">Maintenance actions affect this browser's local data. Firebase rules must be configured separately for shared deployments.</p><button id="clearLocal" class="btn btn-danger btn-wide">Clear local activity data</button></section>
+      <button id="adminLogout" class="btn btn-outline btn-wide">Lock admin console</button>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
