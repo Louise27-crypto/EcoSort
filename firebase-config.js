@@ -1,11 +1,8 @@
-// Firebase web configuration for EcoSort AI.
-// Protect your database with Firebase Authentication
-// and appropriate Realtime Database security rules.
-
 export const firebaseConfig = {
-  apiKey: "AIzaSyCDL33ghFga0OLxYluWyr2XB5_0-jRPR7M",
+  apiKey: "AIzaSyCD33LfgA0OLxYluWyr2XB5_0-jRPR7M",
   authDomain: "ecosort-998db.firebaseapp.com",
-  databaseURL: "https://ecosort-998db-default-rtdb.asia-southeast1.firebasedatabase.app",
+  databaseURL:
+    "https://ecosort-998db-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "ecosort-998db",
   storageBucket: "ecosort-998db.firebasestorage.app",
   messagingSenderId: "286662267404",
